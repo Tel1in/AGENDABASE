@@ -240,10 +240,11 @@ require_once 'conexion.php';
     
         return $evento; 
     }
-    function obtenerDatos3($hora) {
+    function obtenerDatos3($hora,$sala) {
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
-        $sql = "SELECT evento FROM eventoagenda WHERE hora LIKE '$subHora%'";
+        $salas_str = implode(',', $sala); // Convertir el array de salas en una cadena separada por comas
+        $sql = "SELECT evento FROM eventoagenda WHERE hora LIKE '$subHora%' AND sala IN ($salas_str)";
         
         $result = $conn->query($sql);
     
