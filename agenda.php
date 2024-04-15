@@ -8,33 +8,15 @@ require_once 'funcionesSql.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/index.global.min.js'></script>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet'>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-    
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-
-
-        });
-        calendar.render();
-        calendar.getOption('locale');
-        calendar.setOption('locale', 'mx');
-    });
-
-</script>
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script> 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -45,6 +27,9 @@ require_once 'funcionesSql.php';
     });
 </script>
 
+<script>
+    
+</script>
 
 <style>
     .initial-hidden {
@@ -515,6 +500,8 @@ require_once 'funcionesSql.php';
         });
     });
 </script>
+
+
 
 
 
@@ -1086,6 +1073,7 @@ require_once 'funcionesSql.php';
         .catch(error => console.error('Error al obtener los datos del evento:', error));
     }
 </script>
+
 </body>
 
 </html>
