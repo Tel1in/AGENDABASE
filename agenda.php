@@ -55,9 +55,9 @@ require_once 'funcionesSql.php';
 
 <script src="cambiarVentana.js"></script>
 
-<script 
-src="salas.js">
-</script>
+<script src="salas.js"></script>
+
+
 
  <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -218,11 +218,23 @@ src="salas.js">
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var modificarForm = document.getElementById("modificarFormulario");
+        var modificarForm2 = document.getElementById("modificarFormulario2");
 
         modificarForm.addEventListener("submit", function(event) {
             event.preventDefault();
             var formData = new FormData(modificarForm);
+            enviarFormulario(formData);
+        });
 
+        if (modificarForm2) {
+            modificarForm2.addEventListener("submit", function(event) {
+                event.preventDefault();
+                var formData = new FormData(modificarForm2);
+                enviarFormulario(formData);
+            });
+        }
+
+        function enviarFormulario(formData) {
             fetch("modificar_evento.php", {
                 method: "POST",
                 body: formData
@@ -254,7 +266,7 @@ src="salas.js">
                 console.error("Error en la solicitud Fetch: " + error.message);
                 swal("Error", "Hubo un error en la solicitud", "error");
             });
-        });
+        }
     });
 </script>
 
@@ -284,6 +296,8 @@ src="salas.js">
         var modificarDatosBtns = document.querySelectorAll('.modificarDatosBtn');
         var modal = document.getElementById('exampleModal2');
         var form = modal.querySelector('form');
+
+
 
         modificarDatosBtns.forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -448,6 +462,59 @@ src="salas.js">
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('exampleModal3').addEventListener('shown.bs.modal', function () {
+            var modificarBtn1 = document.getElementById("modificarBtn2");
+            var modalFooter1 = document.querySelector("#exampleModal3 .modal-footer");
+            var inputs1 = document.querySelectorAll("#exampleModal3 input");
+
+            // Agregar evento al botón "Modificar"
+            modificarBtn1.addEventListener("click", function () {
+                // Habilitar la edición de los campos de entrada
+                for (var i = 0; i < inputs1.length; i++) {
+                    inputs1[i].readOnly = false;
+                }
+
+                // Crear botón "Cancelar"
+                var cancelarBtn1 = document.createElement("button");
+                cancelarBtn1.setAttribute("type", "button");
+                cancelarBtn1.setAttribute("class", "btn btn-secondary");
+                cancelarBtn1.textContent = "Cancelar";
+                cancelarBtn1.addEventListener("click", function () {
+                    // Restaurar los campos de entrada a solo lectura
+                    for (var i = 0; i < inputs.length; i++) {
+                        inputs1[i].readOnly = true;
+                    }
+
+                    // Restaurar el botón "Modificar"
+                    modificarBtn1.style.display = "inline-block";
+
+                    // Eliminar el botón "Cancelar" y "Confirmar"
+                    modalFooter1.removeChild(cancelarBtn);
+                    modalFooter1.removeChild(confirmarBtn);
+                });
+
+                // Crear botón "Confirmar"
+                var confirmarBtn1 = document.createElement("button");
+                confirmarBtn1.setAttribute("type", "submit");
+                confirmarBtn1.setAttribute("class", "btn btn-danger");
+                confirmarBtn1.textContent = "Confirmar";
+                confirmarBtn1.addEventListener("click", function () {
+                    // Este es el lugar donde podrías agregar la lógica para confirmar
+                    // Por ahora, no haremos nada al hacer clic en "Confirmar"
+                });
+
+                // Agregar botones "Cancelar" y "Confirmar" al pie de página del modal
+                modalFooter1.appendChild(cancelarBtn1);
+                modalFooter1.appendChild(confirmarBtn1);
+
+                // Ocultar el botón "Modificar"
+                modificarBtn1.style.display = "none";
+            });
+        });
+    });
+</script>
 
 
 
@@ -612,6 +679,9 @@ src="salas.js">
                         </div>
                     </div>
                     <div class="container">
+                        <div class="spinner-border text-primary position-fixed  start-50 " role="status" id="spinner2" style="display: none;">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>  
                         <table id="example" class="table table-bordered "
                             style="border-style:hidden; border-color: black;">
                             <thead>
@@ -620,7 +690,7 @@ src="salas.js">
                                     <th>Evento</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaEventosBody" class="">
+                            <tbody id="tablaEventosBody" style="style=display: none;">
                                     <?php
                                       require_once 'eventosAgenda.php'; 
                                     ?>
@@ -771,6 +841,7 @@ src="salas.js">
                     </div>
                 </div>
             </div>
+
             <div id="myModal2" >
                 <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel">
                     <div class="modal-dialog">
@@ -783,6 +854,7 @@ src="salas.js">
                             </div>
                             <div class="modal-body">
                                 <form action="modificar_evento.php" method="post" id="modificarFormulario">
+                                    <input type="hidden" id="modal1" name="modal" value="1">
                                     <input type="hidden" class="form-control" name="idE" id="idE">
                                     <label for="s10">Expediente</label>
                                     <input type="text" class="form-control" name="s10" id="s10" disabled>
@@ -839,8 +911,181 @@ src="salas.js">
                     </div>
                 </div>
             </div>
+
+            <div id="myModal3" >
+                <div class="modal fade" id="exampleModal3" aria-labelledby="exampleModalLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">EVENTO</h5>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="modificar_evento.php" method="post" id="modificarFormulario2">
+                                    <input type="hidden" id="modal2" name="modal" value="2">
+                                    <input type="hidden" class="form-control" name="idE0" id="idE0">
+                                    <label for="s100">Expediente</label>
+                                    <input type="text" class="form-control" name="s100" id="s100" disabled>
+                                    <label for="s1100">Numero</label>
+                                    <input type="text" class="form-control" name="s1100" id="s1100" disabled>                      
+                                    <label for="s1200">Inputado</label>
+                                    <select  class="form-select" name="s1200" id="s1200" disabled>
+                                    <option value="" selected disabled>Seleccione</option>
+                                    </select>
+                                    <label for="s300">Tipo Audiencia</label>
+                                    <select name="s300" id="s300" class="form-select" readonly>
+                                    <option value="" selected disabled>Seleccione</option>
+                                    <?php
+                                             $audiencia = audiencias();
+                                             foreach ($audiencia as $audiencia) {
+                                                echo "<option value='" . $audiencia["id_tipo_audiencia"] . "'>" . $audiencia["nom_tipo_audiencia"] . "</option>";
+                                            }
+                                    ?>
+                                    </select>
+                                    <label for="sala10">Sala</label>
+                                    <select name="sala10" id="sala10" class="form-select" readonly>
+                                    <option value="" selected disabled>Seleccione</option>
+                                    <?php
+                                             $salas = sala();
+                                             foreach ($salas as $salas) {
+                                                echo "<option value='" . $salas["id_sala"] . "'>" . $salas["nombre_sala"] . "</option>";
+                                            }
+                                     ?>
+                                    </select>
+                                    <label for="juez10">Juez</label>
+                                    <select name="juez10" id="juez10" class="form-select" readonly>
+                                    <option value="" selected disabled>Seleccione</option>
+                                    <?php
+                                             $jueces = juez();
+                                             foreach ($jueces as $jueces) {
+                                                echo "<option value='" . $jueces["id_juez"] . "'>" . $jueces["nom_juez"] . "</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                    <label for="d100">Fecha</label>
+                                    <input type="date" id="d100" name="d100" class="form-control" readonly>
+                                    <label for="h100">Hora</label>
+                                    <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" readonly>
+                                    <label for="evento10">Nombre Evento</label>
+                                    <input id="evento10" name="evento10" type="text" required class="form-control" readonly>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" id="modificarBtn2">Modificar</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
+<script>
+        function abrirModal(id_evento_agenda) {
+        // Realizar una solicitud para obtener los detalles del evento
+        fetch('eventosAgenda.php', {
+            method: 'POST',
+            body: new URLSearchParams({
+                action: 'obtenerDatos2',
+                id_evento_agenda: id_evento_agenda
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Llenar los campos del modal con los detalles del evento
+            console.log('Datos del evento recibidos:', data);
+            document.getElementById('idE0').value = data.id_evento_agenda;
+            document.getElementById('s100').value = data.nom_expediente;
+            document.getElementById('s1100').value = data.numero;
+            if (typeof data.nombreInv === 'string') {
+                var id_involucrado = data.id_inv;
+                var option = document.createElement('option');
+                option.value = id_involucrado;
+                option.textContent = data.nombreInv;
+                document.getElementById('s1200').innerHTML = ''; 
+                document.getElementById('s1200').appendChild(option);
+            } else {
+                console.error('nombre_inv no es una cadena de texto:', data.nombreInv);
+            }
+
+            var optionGuardada = document.createElement('option');
+            optionGuardada.value = data.id_tipo_audiencia; 
+            optionGuardada.textContent = data.nom_tipo_audiencia; 
+            optionGuardada.selected = true; 
+            document.getElementById('s300').appendChild(optionGuardada);
+
+            // Verificar si nom_tipo_audiencia es un arreglo
+            if (Array.isArray(data.nom_tipo_audiencia)) {
+                // Iterar sobre cada tipo de audiencia en el arreglo
+                data.nom_tipo_audiencia.forEach(function(audiencia) {
+                    // Crear una opción para cada tipo de audiencia
+                    var option = document.createElement('option');
+                    option.value = audiencia.id_tipo_audiencia;
+                    option.textContent = audiencia.nom_tipo_audiencia;
+
+                    // Agregar la opción al select
+                    document.getElementById('s300').appendChild(option);
+                });
+            } 
+
+            var optionGuardada2 = document.createElement('option');
+            optionGuardada2.value = data.id_sala; 
+            optionGuardada2.textContent = data.nombre_sala; 
+            optionGuardada2.selected = true; 
+            document.getElementById('sala10').appendChild(optionGuardada2);
+
+            // Verificar si nom_tipo_audiencia es un arreglo
+            if (Array.isArray(data.nombre_sala)) {
+                // Iterar sobre cada tipo de audiencia en el arreglo
+                data.nombre_sala.forEach(function(sala) {
+                    // Crear una opción para cada tipo de audiencia
+                    var option = document.createElement('option');
+                    option.value = sala.id_sala;
+                    option.textContent = sala.nom_tipo_audiencia;
+
+                    // Agregar la opción al select
+                    document.getElementById('sala10').appendChild(option);
+                });
+            } 
+
+            
+            var optionGuardada3 = document.createElement('option');
+            optionGuardada3.value = data.id_juez; 
+            optionGuardada3.textContent = data.nom_juez; 
+            optionGuardada3.selected = true; 
+            document.getElementById('juez10').appendChild(optionGuardada3);
+
+            // Verificar si nom_tipo_audiencia es un arreglo
+            if (Array.isArray(data.nom_juez)) {
+                data.nom_juez.forEach(function(juez) {
+                    var option = document.createElement('option');
+                    option.value = juez.id_juez;
+                    option.textContent = juez.nom_juez;
+                    // Agregar la opción al select
+                    document.getElementById('juez10').appendChild(option);
+                });
+            } 
+
+            document.getElementById('d100').value = data.fecha;
+            document.getElementById('h100').value = data.hora;
+            document.getElementById('evento10').value = data.evento;
+            
+
+
+            var modal = new bootstrap.Modal(document.getElementById('exampleModal3'));
+            modal.show();
+        })
+        .catch(error => console.error('Error al obtener los datos del evento:', error));
+    }
+</script>
 </body>
 
 </html>

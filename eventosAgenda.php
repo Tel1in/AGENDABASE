@@ -1,13 +1,18 @@
 <?php
 require_once 'funcionesSql.php';
 
+// Manejar la solicitud POST para obtener datos del evento
+if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
+    $id_evento_agenda = $_POST['id_evento_agenda'];
+    $evento = obtenerDatos2($id_evento_agenda);
+    echo json_encode($evento);
+    exit; // Detener la ejecución del resto del script
+}
 
  function generarTablaEventos() {
     $horas_fijas = array("08:00am", "09:00am", "10:00am", "11:00am", "12:00pm", "13:00pm", "14:00pm", "15:00pm", "16:00pm", "17:00pm", "18:00pm", "19:00pm", "20:00pm", "21:00pm", "22:00pm", "23:00pm", "00:00am", "01:00am", "02:00am", "03:00am", "04:00am", "05:00am", "06:00am", "07:00pm");
     $fechaCookie = $_COOKIE['fechaActual'];
-    echo '<script>';
-    echo 'console.log("Fecha obtenida de la cookie en PHP:", ' . json_encode($fechaCookie) . ');';
-    echo '</script>';
+
 
 
     foreach ($horas_fijas as $hora) {
@@ -67,7 +72,8 @@ require_once 'funcionesSql.php';
                 } else if (in_array($evento, $eventosVO)) {
                     $color = 'darkcyan';
                 }
-                echo '<div class="col" style="border: 1px solid black; background-color: ' . $color . ' ;"> <h6>' . $evento . '</h6></div>';
+                echo '<div class="col" onclick="abrirModal(' . $evento['id_evento_agenda'] . ')" style="border: 1px solid black; background-color: ' . $color . ' ;"><h6>' . $evento['eventoFN'] . '</h6></div>';
+
             }
 
             echo '</div>';

@@ -240,21 +240,22 @@ require_once 'conexion.php';
     
         return $evento; 
     }
+
+  
     
-    function obtenerDatos3($hora,$sala,$fecha) {
+    function obtenerDatos3($hora, $sala, $fecha) {
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
         $salas_str = implode(',', $sala); // Convertir el array de salas en una cadena separada por comas
-        $sql = "SELECT CONCAT(TIME_FORMAT(hora,'%H:%i'),' = ',numero) as eventoFN FROM eventoagenda WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha'";
+        $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(hora,'%H:%i'),' = ',numero) as eventoFN FROM eventoagenda WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha'";
         
         $result = $conn->query($sql);
-    
-        $eventos = array(); // Inicializar el array de eventos
+        $eventos = array(); 
     
         if ($result->num_rows > 0) {
             // Si se encuentran eventos, los agregamos al array $eventos
             while ($row = $result->fetch_assoc()) {
-                $eventos[] = $row['eventoFN'];
+                $eventos[] = $row; // Modificar para agregar el array asociativo completo
             }
         }
     
@@ -263,6 +264,8 @@ require_once 'conexion.php';
         return $eventos;
     }
     
+
+
      function eliminarDatos($id_evento_agenda){
         $conn = conexion();
         $sql = "DELETE FROM eventoagenda WHERE id_evento_agenda = '$id_evento_agenda'";

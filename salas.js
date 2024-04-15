@@ -10,11 +10,6 @@ var sanPa = document.getElementById("n7");
 var sele = document.getElementById("s1")
 
 document.addEventListener("DOMContentLoaded", function () {
-
-
-
-
-
     setTimeout(function () {
         mostrarNavbar();
     }, 1000);
@@ -46,6 +41,8 @@ function mostrarNavbar() {
     }
 
 }
+
+
 function llenarSelectSegunUsuario() {
     s1.innerHTML = "";
 

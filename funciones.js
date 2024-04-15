@@ -1,5 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    
     var fechaInput = document.getElementById('fechaInput');
     fechaInput.addEventListener('change', function() {
         actualizarFechaSeleccionada();
@@ -76,11 +77,17 @@ function guardarFechaEnCookie() {
 
 
 function cargarTablaEventosDesdePHP() {
+    var spinner = document.getElementById('spinner2');
+    var tabla = document.getElementById('tablaEventosBody');
+    spinner.style.display = 'block';
+    tabla.style.display = 'none';
     fetch('eventosAgenda.php')
     .then(response => response.text())
     .then(data => {
     
-        document.getElementById('tablaEventosBody').innerHTML = data;
+        tabla.innerHTML = data;
+        spinner.style.display = 'none';
+        tabla.style.display = '';
     })
     .catch(error => console.error('Error al cargar la tabla de eventos:', error));
 }
