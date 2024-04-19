@@ -266,7 +266,7 @@ require_once 'conexion.php';
 
     function obtenerDatos4() {
         $conn = conexion();
-        $sql = "SELECT CONCAT(cat_tipo_expediente.tipo_expediente, '-', eventoagenda.numero) AS title, eventoagenda.fecha AS f
+        $sql = "SELECT eventoagenda.id_evento_agenda AS idEvento,CONCAT(cat_tipo_expediente.tipo_expediente, '-', eventoagenda.numero) AS title, eventoagenda.fecha AS f
                 FROM eventoagenda
                 INNER JOIN cat_tipo_expediente ON eventoagenda.expediente = cat_tipo_expediente.id_tipo_expediente";
         $result = $conn->query($sql);
@@ -274,6 +274,7 @@ require_once 'conexion.php';
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $eventos[] = array(
+                    'id' => $row['idEvento'],
                     'title' => $row['title'],
                     'date' => $row['f'],
                     'allDay' => true

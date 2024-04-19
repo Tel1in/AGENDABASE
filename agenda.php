@@ -17,6 +17,7 @@ require_once 'funcionesSql.php';
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script> 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -34,10 +35,9 @@ require_once 'funcionesSql.php';
         display: none;
     }
 </style>
+
+
 <script src="funciones.js"></script>
-
-
-
 <script src="salas.js"></script>
 
 
@@ -468,7 +468,7 @@ require_once 'funcionesSql.php';
                 cancelarBtn1.textContent = "Cancelar";
                 cancelarBtn1.addEventListener("click", function () {
                     // Restaurar los campos de entrada a solo lectura
-                    for (var i = 0; i < inputs.length; i++) {
+                    for (var i = 0; i < inputs1.length; i++) {
                         inputs1[i].readOnly = true;
                     }
 
@@ -476,8 +476,8 @@ require_once 'funcionesSql.php';
                     modificarBtn1.style.display = "inline-block";
 
                     // Eliminar el botón "Cancelar" y "Confirmar"
-                    modalFooter1.removeChild(cancelarBtn);
-                    modalFooter1.removeChild(confirmarBtn);
+                    modalFooter1.removeChild(cancelarBtn1);
+                    modalFooter1.removeChild(confirmarBtn1);
                 });
 
                 // Crear botón "Confirmar"
