@@ -6,7 +6,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
     $id_evento_agenda = $_POST['id_evento_agenda'];
     $evento = obtenerDatos2($id_evento_agenda);
     echo json_encode($evento);
-    exit; // Detener la ejecución del resto del script
+    exit; 
 }
 
  function generarTablaEventos() {

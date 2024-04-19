@@ -1,29 +1,22 @@
-
+// cambiarVentanas.js
+export function cambiarVentanas(x) {    
     var cal = document.getElementById('calendar');
     var tab = document.getElementById('tabla2');
     var ta3 = document.getElementById('tabla3');
-    
-    document.addEventListener("DOMContentLoaded",function() {
-        calendar.style.display = 'none';
-        tabla2.style.display = 'block';
-        tabla3.style.display = 'none';
-
-    });
-   
-
-    function cambiarVentanas(x) {
-        if (x == 'tabla2') {
-            calendar.style.display = 'none';
-            tabla2.style.display = 'block';
-            tabla3.style.display = 'none';
-        } else if (x == 'tabla3') {
-            calendar.style.display = 'none';
-            tabla2.style.display = 'none';
-            tabla3.style.display = 'block';
-        } else {
-            calendar.style.display = 'block';
-            tabla2.style.display = 'none';
-            tabla3.style.display = 'none';
-        }
-    };
-
+  
+    if (x === 'calendar') {
+      cal.classList.remove('d-none');
+      tab.classList.add('d-none');
+      ta3.classList.add('d-none');
+      window.calendar.updateSize(); // Forzar la actualización del tamaño
+      window.calendar.render(); // Forzar el renderizado del calendario
+    } else if (x === 'tabla3') {
+      cal.classList.add('d-none');
+      tab.classList.add('d-none');
+      ta3.classList.remove('d-none');
+    } else {
+      cal.classList.add('d-none');
+      tab.classList.remove('d-none');
+      ta3.classList.add('d-none');
+    }
+  }

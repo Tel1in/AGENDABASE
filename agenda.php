@@ -27,9 +27,7 @@ require_once 'funcionesSql.php';
     });
 </script>
 
-<script>
-    
-</script>
+
 
 <style>
     .initial-hidden {
@@ -38,9 +36,11 @@ require_once 'funcionesSql.php';
 </style>
 <script src="funciones.js"></script>
 
-<script src="cambiarVentana.js"></script>
+
 
 <script src="salas.js"></script>
+
+
 
 
 
@@ -504,8 +504,6 @@ require_once 'funcionesSql.php';
 
 
 
-
-
 <title>AGENDA V1</title>
 </head>
 
@@ -523,10 +521,9 @@ require_once 'funcionesSql.php';
         </div>
         <div class="row-3";>
             <div class="col-10">
-                <div id="calendar">
+                <div id="calendar" class="d-none">
                 </div>
                 <div id="tabla2">
-
                     <div class="navbar">
                         <div class="container">
                             <h2 id="fechaHeader" class="i" style="font-size:27px;"></h2>
@@ -686,7 +683,7 @@ require_once 'funcionesSql.php';
                         </table>
                     </div>
                 </div>
-                <div id="tabla3">
+                <div id="tabla3" class="d-none">
                 <table class="table table-striped">
                     <thead class="table-dark">
                         <tr>
@@ -735,9 +732,6 @@ require_once 'funcionesSql.php';
                     </TBody>
                 </table>
                 </div>
-            </div>
-            <div class="col-5">
-                
             </div>
         </div>
         <div class="row">
@@ -1073,6 +1067,7 @@ require_once 'funcionesSql.php';
         .catch(error => console.error('Error al obtener los datos del evento:', error));
     }
 </script>
+<script src="dist/bundle.js"></script>
 
 </body>
 

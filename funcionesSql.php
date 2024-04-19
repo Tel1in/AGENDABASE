@@ -263,6 +263,26 @@ require_once 'conexion.php';
     
         return $eventos;
     }
+
+    function obtenerDatos4() {
+        $conn = conexion();
+        $sql = "SELECT CONCAT(cat_tipo_expediente.tipo_expediente, '-', eventoagenda.numero) AS title, eventoagenda.fecha AS f
+                FROM eventoagenda
+                INNER JOIN cat_tipo_expediente ON eventoagenda.expediente = cat_tipo_expediente.id_tipo_expediente";
+        $result = $conn->query($sql);
+        $eventos = array();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $eventos[] = array(
+                    'title' => $row['title'],
+                    'date' => $row['f'],
+                    'allDay' => true
+                );
+            }
+        }
+        $conn->close();
+        return $eventos;
+    }
     
 
 
@@ -303,3 +323,4 @@ require_once 'conexion.php';
     
 
 
+    
