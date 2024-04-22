@@ -756,8 +756,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Selecciona un tipo de expediente</option>
                                         <?php
                                              $exp = expediente();
-                                             foreach ($exp as $exp) {
-                                                echo "<option value='" . $exp["id_tipo_expediente"] . "'>" . $exp["nom_expediente"] . "</option>";
+                                             foreach ($exp as $exp1) {
+                                                echo "<option value='" . $exp1["id_tipo_expediente"] . "'>" . $exp1["nom_expediente"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -776,8 +776,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Selecciona una audiencia</option>
                                     <?php
                                              $audiencia = audiencias();
-                                             foreach ($audiencia as $audiencia) {
-                                                echo "<option value='" . $audiencia["id_tipo_audiencia"] . "'>" . $audiencia["nom_tipo_audiencia"] . "</option>";
+                                             foreach ($audiencia as $audi) {
+                                                echo "<option value='" . $audi["id_tipo_audiencia"] . "'>" . $audi["nom_tipo_audiencia"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -786,8 +786,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Selecciona una sala</option>
                                     <?php
                                              $salas = sala();
-                                             foreach ($salas as $salas) {
-                                                echo "<option value='" . $salas["id_sala"] . "'>" . $salas["nombre_sala"] . "</option>";
+                                             foreach ($salas as $sal) {
+                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -796,8 +796,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione un juez</option>
                                     <?php
                                              $jueces = juez();
-                                             foreach ($jueces as $jueces) {
-                                                echo "<option value='" . $jueces["id_juez"] . "'>" . $jueces["nom_juez"] . "</option>";
+                                             foreach ($jueces as $juez) {
+                                                echo "<option value='" . $juez["id_juez"] . "'>" . $juez["nom_juez"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -850,8 +850,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $audiencia = audiencias();
-                                             foreach ($audiencia as $audiencia) {
-                                                echo "<option value='" . $audiencia["id_tipo_audiencia"] . "'>" . $audiencia["nom_tipo_audiencia"] . "</option>";
+                                             foreach ($audiencia as $aud) {
+                                                echo "<option value='" . $audiencia["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
                                             }
                                     ?>
                                     </select>
@@ -860,8 +860,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $salas = sala();
-                                             foreach ($salas as $salas) {
-                                                echo "<option value='" . $salas["id_sala"] . "'>" . $salas["nombre_sala"] . "</option>";
+                                             foreach ($salas as $sal) {
+                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
                                             }
                                      ?>
                                     </select>
@@ -870,8 +870,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $jueces = juez();
-                                             foreach ($jueces as $jueces) {
-                                                echo "<option value='" . $jueces["id_juez"] . "'>" . $jueces["nom_juez"] . "</option>";
+                                             foreach ($jueces as $juec) {
+                                                echo "<option value='" . $juec["id_juez"] . "'>" . $juec["nom_juez"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -920,8 +920,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $audiencia = audiencias();
-                                             foreach ($audiencia as $audiencia) {
-                                                echo "<option value='" . $audiencia["id_tipo_audiencia"] . "'>" . $audiencia["nom_tipo_audiencia"] . "</option>";
+                                             foreach ($audiencia as $aud) {
+                                                echo "<option value='" . $aud["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
                                             }
                                     ?>
                                     </select>
@@ -930,8 +930,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $salas = sala();
-                                             foreach ($salas as $salas) {
-                                                echo "<option value='" . $salas["id_sala"] . "'>" . $salas["nombre_sala"] . "</option>";
+                                             foreach ($salas as $sal) {
+                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
                                             }
                                      ?>
                                     </select>
@@ -940,8 +940,8 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     <?php
                                              $jueces = juez();
-                                             foreach ($jueces as $jueces) {
-                                                echo "<option value='" . $jueces["id_juez"] . "'>" . $jueces["nom_juez"] . "</option>";
+                                             foreach ($jueces as $jue) {
+                                                echo "<option value='" . $jue["id_juez"] . "'>" . $jue["nom_juez"] . "</option>";
                                             }
                                         ?>
                                     </select>
