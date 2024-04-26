@@ -41,10 +41,7 @@ require_once 'funcionesSql.php';
 <script src="salas.js"></script>
 
 
-
-
-
- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('s1').addEventListener('change', function () {
             var selectedValue = this.value;
@@ -131,7 +128,7 @@ require_once 'funcionesSql.php';
 </script>
 
 
- <!-- 
+<!-- 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 var selectAudiencia = document.getElementById("s3");
@@ -142,7 +139,8 @@ require_once 'funcionesSql.php';
             });
     </script>
 -->
- <script>
+
+<script>
         document.addEventListener("DOMContentLoaded", function () {
             var inputAudiencia = document.getElementById("inputAudiencia");
             function deshabilitarInput() {
@@ -156,48 +154,36 @@ require_once 'funcionesSql.php';
                 deshabilitarInput();
             });
         });
- </script>
+        
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.querySelector("form");
-
         form.addEventListener("submit", function(event) {
             event.preventDefault();
             var formData = new FormData(form);
             fetch("insertarEvento.php", {
-                method: "POST",
-                body: formData
+            method: "POST",
+            body: formData
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-                }
-                return response.text();
-            })
+            .then(response => response.text())
             .then(data => {
-                if (!data.trim()) {
-                    // Si la respuesta está vacía, mostramos un mensaje de éxito genérico
-                    swal("Evento Insertado con Éxito", "CONTINUAR", "success")
-                    .then(() => {
-                        location.reload();
-                    });
-                } else if (data.trim() === "Evento insertado correctamente.") {
-                    // Si la respuesta contiene el mensaje de éxito esperado
-                    swal("Evento Insertado con Éxito", "CONTINUAR", "success")
-                    .then(() => {
-                        location.reload();
-                    });
-                } else {
-                    swal("Error", data, "error");
-                }
+            if (data.trim() === "Evento insertado correctamente.") {
+                swal("Evento Insertado con Éxito", "CONTINUAR", "success")
+                .then(() => {
+                    location.reload();
+                });
+            } else {
+                swal("Error", data, "error");
+            }
             })
             .catch(error => {
-                console.error("Error en la solicitud Fetch: " + error.message);
-                swal("Error", "Hubo un error en la solicitud", "error");
+            console.error("Error en la solicitud Fetch: " + error.message);
+            swal("Error", "Hubo un error en la solicitud", "error");
             });
         });
-    });
+   });
 </script>
 
 <script>
@@ -263,7 +249,7 @@ require_once 'funcionesSql.php';
             fetch('eliminar_evento.php?id_evento_agenda=' + id_evento_agenda)
                 .then(response => response.text())
                 .then(data => {
-                    alert('Éxito: ' + data);
+                    swal("Evento Eliminado con Exito: "+ data, "CONTINUAR", "SUCCESS")
                     window.location.reload();
                 })
                 .catch(error => {
@@ -282,11 +268,8 @@ require_once 'funcionesSql.php';
         var modal = document.getElementById('exampleModal2');
         var form = modal.querySelector('form');
 
-
-
         modificarDatosBtns.forEach(function (btn) {
             btn.addEventListener('click', function () {
-    
                 var idEvento = this.getAttribute('data-id');
                 console.log('ID del evento:', idEvento);
 
@@ -300,87 +283,46 @@ require_once 'funcionesSql.php';
                 .then(response => response.json())
                 .then(data => {
                     console.log('Datos del evento recibidos:', data);
-                    if (data && Object.keys(data).length > 0) {
+                    if (data && !data.error) {
                         form.querySelector('#idE').value = data.id_evento_agenda;
                         form.querySelector('#s10').value = data.nom_expediente;
                         form.querySelector('#s110').value = data.numero;
 
-                        if (typeof data.nombreInv === 'string') {
-                            var id_involucrado = data.id_inv;
-                            var option = document.createElement('option');
-                            option.value = id_involucrado;
-                            option.textContent = data.nombreInv;
-                            form.querySelector('#s120').innerHTML = ''; 
-                            form.querySelector('#s120').appendChild(option);
-                        } else {
-                            console.error('nombre_inv no es una cadena de texto:', data.nombreInv);
-                        }
- 
+                        var id_inputado = data.idInputado;
+                        var nombre_inputado = data.nombreInputado;
+                        var option = document.createElement('option');
+                        option.value = id_inputado;
+                        option.textContent = nombre_inputado;
+                        form.querySelector('#s120').innerHTML = '';
+                        form.querySelector('#s120').appendChild(option);
+
+                        form.querySelector('#s30').innerHTML = '';
+                        form.querySelector('#sala1').innerHTML = '';
+                        form.querySelector('#juez1').innerHTML = '';
 
                         var optionGuardada = document.createElement('option');
-                        optionGuardada.value = data.id_tipo_audiencia; 
-                        optionGuardada.textContent = data.nom_tipo_audiencia; 
-                        optionGuardada.selected = true; 
+                        optionGuardada.value = data.id_tipo_audiencia;
+                        optionGuardada.textContent = data.nom_tipo_audiencia;
+                        optionGuardada.selected = true;
                         form.querySelector('#s30').appendChild(optionGuardada);
 
-                        // Verificar si nom_tipo_audiencia es un arreglo
-                        if (Array.isArray(data.nom_tipo_audiencia)) {
-                            // Iterar sobre cada tipo de audiencia en el arreglo
-                            data.nom_tipo_audiencia.forEach(function(audiencia) {
-                                // Crear una opción para cada tipo de audiencia
-                                var option = document.createElement('option');
-                                option.value = audiencia.id_tipo_audiencia;
-                                option.textContent = audiencia.nom_tipo_audiencia;
-
-                                // Agregar la opción al select
-                                form.querySelector('#s30').appendChild(option);
-                            });
-                        } 
-
                         var optionGuardada2 = document.createElement('option');
-                        optionGuardada2.value = data.id_sala; 
-                        optionGuardada2.textContent = data.nombre_sala; 
-                        optionGuardada2.selected = true; 
+                        optionGuardada2.value = data.id_sala;
+                        optionGuardada2.textContent = data.nombre_sala;
+                        optionGuardada2.selected = true;
                         form.querySelector('#sala1').appendChild(optionGuardada2);
 
-                        // Verificar si nom_tipo_audiencia es un arreglo
-                        if (Array.isArray(data.nombre_sala)) {
-                            // Iterar sobre cada tipo de audiencia en el arreglo
-                            data.nombre_sala.forEach(function(sala) {
-                                // Crear una opción para cada tipo de audiencia
-                                var option = document.createElement('option');
-                                option.value = sala.id_sala;
-                                option.textContent = sala.nom_tipo_audiencia;
-
-                                // Agregar la opción al select
-                                form.querySelector('#sala1').appendChild(option);
-                            });
-                        } 
-
-                        
                         var optionGuardada3 = document.createElement('option');
-                        optionGuardada3.value = data.id_juez; 
-                        optionGuardada3.textContent = data.nom_juez; 
-                        optionGuardada3.selected = true; 
+                        optionGuardada3.value = data.id_juez;
+                        optionGuardada3.textContent = data.nom_juez;
+                        optionGuardada3.selected = true;
                         form.querySelector('#juez1').appendChild(optionGuardada3);
-
-                        // Verificar si nom_tipo_audiencia es un arreglo
-                        if (Array.isArray(data.nom_juez)) {
-                            data.nom_juez.forEach(function(juez) {
-                                var option = document.createElement('option');
-                                option.value = juez.id_juez;
-                                option.textContent = juez.nom_juez;
-                                // Agregar la opción al select
-                                form.querySelector('#juez1').appendChild(option);
-                            });
-                        } 
-                    
 
                         form.querySelector('#d10').value = data.fecha;
                         form.querySelector('#h10').value = data.hora;
                         form.querySelector('#evento1').value = data.evento;
                     } else {
-                        console.error('Datos del evento no válidos:', data);
+                        console.error('Error al obtener los datos del evento:', data.error);
                     }
                 })
                 .catch(error => {
@@ -389,7 +331,6 @@ require_once 'funcionesSql.php';
             });
         });
     });
-
 </script>
 
 <script>
@@ -708,7 +649,7 @@ require_once 'funcionesSql.php';
                                             <td><?php echo $row["id_evento_agenda"]?></td>
                                             <td><?php echo $row["nom_expediente"]?></td>
                                             <td><?php echo $row["numero"]?> </td>
-                                            <td><?php echo $row["nombreInv"]?> </td>
+                                            <td><?php echo $row["nombreInputado"]?> </td>
                                             <td><?php echo $row["nom_tipo_audiencia"]?> </td>
                                             <td><?php echo $row["nombre_sala"]?> </td>
                                             <td><?php echo $row["nom_juez"]?> </td>

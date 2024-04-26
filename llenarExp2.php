@@ -9,7 +9,7 @@ if (isset($_POST['valor1'])) {
 
     // Llena el tercer select con los datos obtenidos en expediente3
     foreach ($exp3 as $exp) {
-        echo "<option value='" . $exp['id_inv'] . "'>" . $exp['nombreInputado'] . "</option>";
+        echo "<option value='" . $exp['idinvolucrado'] . "'>" . $exp['nombreInputado'] . "</option>";
     }
 } else {
     echo "Error: No se proporcionó el valor del segundo select.";

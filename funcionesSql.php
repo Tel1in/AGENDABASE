@@ -150,15 +150,31 @@ require_once 'conexion.php';
     function expediente3($id) {
         $conn = conexion();
         $sql = "";
-    
-        $sql = "SELECT id_inv , CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE causa_id = '$id'";
-    
         $exp3 = array();
-    
-    
+
+
+        $checkCausa = "SELECT COUNT(*) FROM involucrado WHERE causa_id = '$id'";
+        $resultCausa = $conn->query($checkCausa);
+        if ($resultCausa && $resultCausa->fetch_row()[0] > 0) {
+            $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE causa_id = '$id'";
+        } else {
+            $checkAsunto = "SELECT COUNT(*) FROM asunto_penal WHERE id_asunto = '$id'";
+            $resultAsunto = $conn->query($checkAsunto);
+            if ($resultAsunto && $resultAsunto->fetch_row()[0] > 0) {
+                $sql = "SELECT id_asunto AS idinvolucrado, procesado AS nombreInputado FROM asunto_penal WHERE id_asunto='$id'";
+            } else {
+                $checkCC = "SELECT COUNT(*) FROM involucrado WHERE id_cc = '$id'";
+                $resultCC = $conn->query($checkCC);
+                if ($resultCC && $resultCC->fetch_row()[0] > 0) {
+                    $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE id_cc = '$id'";
+                } else {
+                        $exp3[] = array('idinvolucrado' => 0, 'nombreInputado' => 'Sin inputado');
+                }
+            }
+        }
+
         if (!empty($sql)) {
             $result = $conn->query($sql);
-    
             if (!$result) {
                 echo "Error en la consulta SQL: " . $conn->error;
             } else {
@@ -169,9 +185,8 @@ require_once 'conexion.php';
         } else {
             echo "Error: La consulta SQL está vacía.";
         }
-    
+
         $conn->close();
-    
         return $exp3;
     }
     
@@ -180,13 +195,24 @@ require_once 'conexion.php';
     function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $fecha, $hora, $evento)
     {
         $conn = conexion();
+
+            $sql_check = "SELECT COUNT(*) FROM eventoAgenda WHERE fecha = '$fecha' AND hora = '$hora'";
+            $result = $conn->query($sql_check);
+            $row = $result->fetch_row();
+            if ($row[0] > 0) {
+                $response = "Error: Ya existe un evento con el mismo  fecha y hora.";
+                echo $response;
+                $conn->close();
+                return;
+            }
     
-    
-            $sql_insert = "INSERT INTO eventoAgenda (expediente,numero,inputado,tipoAudiencia,sala,juez,fecha,hora,evento)
-                           VALUES ('$nom_expediente','$numero',$inputado,'$tipoAud','$sala','$juez', '$fecha', '$hora', '$evento')";
+            $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, inputado, tipoAudiencia, sala, juez, fecha, hora, evento) VALUES ('$nom_expediente', '$numero', $inputado, '$tipoAud', '$sala', '$juez', '$fecha', '$hora', '$evento')";
             if ($conn->query($sql_insert) === TRUE) {
+                $response = "Evento insertado correctamente.";
+                echo $response;
             } else {
-                echo "Error en la inserción del evento: " . $conn->error;
+                $response = "Error en la inserción del evento: " . $conn->error;
+                echo $response;
             }
        
         $conn->close();
@@ -195,50 +221,76 @@ require_once 'conexion.php';
     
     function obtenerDatos(){
         $conn = conexion();
-        $sql = "SELECT eventoagenda.id_evento_agenda,cat_tipo_expediente.nom_expediente,eventoagenda.numero,CONCAT(involucrado.nombre_inv,' ',involucrado.paterno_inv,' ',involucrado.materno_inv) as nombreInv,tipo_audiencia.nom_tipo_audiencia,sala.nombre_sala,juez.nom_juez,
-                       eventoagenda.fecha,eventoagenda.hora,eventoagenda.evento 
-                    from eventoagenda 
-                    inner join cat_tipo_expediente on cat_tipo_expediente.id_tipo_expediente=eventoagenda.expediente
-                    inner join involucrado on involucrado.id_inv = eventoagenda.inputado
-                    inner join tipo_audiencia on tipo_audiencia.id_tipo_audiencia=eventoagenda.tipoAudiencia
-                    inner join sala on sala.id_sala = eventoagenda.sala
-                    inner join juez on juez.id_juez = eventoagenda.juez
-                    ORDER BY eventoagenda.id_evento_agenda ASC;" ;
+        $sql = "SELECT
+                    eventoagenda.id_evento_agenda,
+                    cat_tipo_expediente.nom_expediente,
+                    eventoagenda.numero,
+                    COALESCE(
+                        CONCAT(involucrado.nombre_inv, ' ', involucrado.paterno_inv, ' ', involucrado.materno_inv),
+                        asunto_penal.procesado
+                    ) AS nombreInputado,
+                    tipo_audiencia.nom_tipo_audiencia,
+                    sala.nombre_sala,
+                    juez.nom_juez,
+                    eventoagenda.fecha,
+                    eventoagenda.hora,
+                    eventoagenda.evento
+                FROM
+                    eventoagenda
+                    INNER JOIN cat_tipo_expediente ON cat_tipo_expediente.id_tipo_expediente = eventoagenda.expediente
+                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.inputado
+                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.inputado
+                    INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
+                    INNER JOIN sala ON sala.id_sala = eventoagenda.sala
+                    INNER JOIN juez ON juez.id_juez = eventoagenda.juez
+                ORDER BY
+                    eventoagenda.id_evento_agenda ASC;";
     
         $result = $conn->query($sql);
-    
         $conn->close();
-    
         return $result;
     }
     
     function obtenerDatos2($id_evento_agenda){
         $conn = conexion();
-        $sql = "SELECT eventoagenda.id_evento_agenda,cat_tipo_expediente.nom_expediente,eventoagenda.numero,
-                       CONCAT(involucrado.nombre_inv,' ',involucrado.paterno_inv,' ',involucrado.materno_inv) as nombreInv,involucrado.id_inv,tipo_audiencia.id_tipo_audiencia,
-                       tipo_audiencia.nom_tipo_audiencia,sala.id_sala,sala.nombre_sala,
-                       juez.nom_juez,juez.id_juez,
-                       eventoagenda.fecha,eventoagenda.hora,eventoagenda.evento 
-                    FROM eventoagenda 
-                    INNER JOIN cat_tipo_expediente ON cat_tipo_expediente.id_tipo_expediente=eventoagenda.expediente
-                    INNER JOIN involucrado ON involucrado.id_inv = eventoagenda.inputado
-                    INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia=eventoagenda.tipoAudiencia
+        $sql = "SELECT
+                    eventoagenda.id_evento_agenda,
+                    cat_tipo_expediente.nom_expediente,
+                    eventoagenda.numero,
+                    COALESCE(
+                        CONCAT(involucrado.nombre_inv, ' ', involucrado.paterno_inv, ' ', involucrado.materno_inv),
+                        asunto_penal.procesado
+                    ) AS nombreInputado,
+                    COALESCE(involucrado.id_inv, asunto_penal.id_asunto) AS idInputado,
+                    tipo_audiencia.id_tipo_audiencia,
+                    tipo_audiencia.nom_tipo_audiencia,
+                    sala.id_sala,
+                    sala.nombre_sala,
+                    juez.nom_juez,
+                    juez.id_juez,
+                    eventoagenda.fecha,
+                    eventoagenda.hora,
+                    eventoagenda.evento
+                FROM
+                    eventoagenda
+                    INNER JOIN cat_tipo_expediente ON cat_tipo_expediente.id_tipo_expediente = eventoagenda.expediente
+                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.inputado
+                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.inputado
+                    INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
                     INNER JOIN sala ON sala.id_sala = eventoagenda.sala
                     INNER JOIN juez ON juez.id_juez = eventoagenda.juez
-                    WHERE eventoagenda.id_evento_agenda = '$id_evento_agenda';";
-    
+                WHERE
+                    eventoagenda.id_evento_agenda = '$id_evento_agenda';";
+
         $result = $conn->query($sql);
-    
-        $evento = array(); // Inicializamos un array para almacenar los datos del evento
-    
+        $evento = array();
+
         if ($result->num_rows > 0) {
-            // Obtenemos los datos del primer (y único) evento encontrado
             $evento = $result->fetch_assoc();
         }
-    
+
         $conn->close();
-    
-        return $evento; 
+        return $evento;
     }
 
   
