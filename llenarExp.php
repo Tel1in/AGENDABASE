@@ -1,8 +1,8 @@
 <?php
 require_once 'funcionesSql.php';
 
-if (isset($_POST['id_tipo_expediente'])) {
-    $id_tipo_expediente = $_POST['id_tipo_expediente'];
+if (isset($_GET['id_tipo_expediente'])) {
+    $id_tipo_expediente = $_GET['id_tipo_expediente'];
     $exp2 = expediente2($id_tipo_expediente);
 
     echo "<option value='' selected disabled>Seleccione</option>";

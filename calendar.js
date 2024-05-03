@@ -52,16 +52,17 @@ let calendar = new Calendar(calendarEl, {
             document.getElementById('idE0').value = data.id_evento_agenda;
             document.getElementById('s100').value = data.nom_expediente;
             document.getElementById('s1100').value = data.numero;
-            if (typeof data.nombreInv === 'string') {
-                let id_involucrado = data.id_inv;
-                let option = document.createElement('option');
-                option.value = id_involucrado;
-                option.textContent = data.nombreInv;
-                document.getElementById('s1200').innerHTML = ''; 
-                document.getElementById('s1200').appendChild(option);
-            } else {
-                console.error('nombre_inv no es una cadena de texto:', data.nombreInv);
-            }
+
+
+           
+            let id_involucrado = data.idInputado;
+            let nombre_inputado = data.nombreInputado;
+            let option = document.createElement('option');
+            option.value = id_involucrado;
+            option.textContent = nombre_inputado;
+            document.getElementById('s1200').innerHTML = ''; 
+            document.getElementById('s1200').appendChild(option);
+        
 
             let optionGuardada = document.createElement('option');
             optionGuardada.value = data.id_tipo_audiencia; 
