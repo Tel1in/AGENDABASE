@@ -2,6 +2,7 @@
     "name": "lalos/agenda-v1",
     "description": "Agenda",
     "type": "project",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "Lalos\\AgendaV1\\": "src/"
