@@ -122,6 +122,22 @@ let calendar = new Calendar(calendarEl, {
                 });
             } 
 
+            let optionGuardada4 = document.createElement('option');
+            optionGuardada4.value = data.idSolicitante;
+            optionGuardada4.textContent = data.TipoSolicitante;
+            optionGuardada4.selected = true;
+            document.getElementById('sol111').appendChild(optionGuardada4); 
+
+            if (Array.isArray(data.TipoSolicitante)) {
+                data.TipoSolicitante.forEach(function(solicitante) {
+                    let option = document.createElement('option');
+                    option.value = solicitante.idSolicitante;
+                    option.textContent = solicitante.TipoSolicitante;
+                    // Agregar la opción al select
+                    document.getElementById('sol111').appendChild(option);
+                });
+            } 
+
             document.getElementById('d100').value = data.fecha;
             document.getElementById('h100').value = data.hora;
             document.getElementById('evento10').value = data.evento;

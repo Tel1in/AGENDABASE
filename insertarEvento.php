@@ -8,10 +8,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tipoAud = $_POST['s3'];
     $sala = $_POST['sala'];
     $juez = $_POST['juez'];
+    $solicitante = $_POST['sol1'];
     $fecha = $_POST['d1'];
     $hora = $_POST['h1'];
     $evento = $_POST['evento'];
-    insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $fecha, $hora, $evento);
+    insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento);
 }
 ?>
 

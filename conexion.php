@@ -1,7 +1,7 @@
 <?php 
     function conexion(){
      
-        $servername = "127.0.0.1";
+        $servername = "127.0.0.1:3307";
         $username = "root";
         $password = "1234";
         $dbname = "causasis";

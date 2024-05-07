@@ -84,6 +84,26 @@ require_once 'conexion.php';
     
         return $jueces;
     }
+
+    function solicitante(){
+        $conn = conexion();
+        $sql = "SELECT idSolicitante,TipoSolicitante FROM solicitante";
+        $result = $conn->query($sql);
+
+        $solicitante = array();
+
+        if($result){
+            while ($row = $result->fetch_assoc()){
+                $solicitante[] = $row;
+            }
+        } else {
+            echo "Error en la consulta: " . $conn->error;
+        }
+
+        $conn->close();
+
+        return $solicitante;
+    }
     
     function expediente2($id_tipo_expediente) {
         $conn = conexion();
@@ -192,7 +212,7 @@ require_once 'conexion.php';
     
     
     
-    function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $fecha, $hora, $evento)
+    function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento)
     {
         $conn = conexion();
 
@@ -206,7 +226,7 @@ require_once 'conexion.php';
                 return;
             }
     
-            $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, inputado, tipoAudiencia, sala, juez, fecha, hora, evento) VALUES ('$nom_expediente', '$numero', $inputado, '$tipoAud', '$sala', '$juez', '$fecha', '$hora', '$evento')";
+            $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, inputado, tipoAudiencia, sala, juez, Solicitante, fecha, hora, evento) VALUES ('$nom_expediente', '$numero', $inputado, '$tipoAud', '$sala', '$juez', '$solicitante', '$fecha', '$hora', '$evento')";
             if ($conn->query($sql_insert) === TRUE) {
                 $response = "Evento insertado correctamente.";
                 echo $response;
@@ -232,6 +252,7 @@ require_once 'conexion.php';
                     tipo_audiencia.nom_tipo_audiencia,
                     sala.nombre_sala,
                     juez.nom_juez,
+                    solicitante.Solicitante,
                     eventoagenda.fecha,
                     eventoagenda.hora,
                     eventoagenda.evento
@@ -243,6 +264,7 @@ require_once 'conexion.php';
                     INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
                     INNER JOIN sala ON sala.id_sala = eventoagenda.sala
                     INNER JOIN juez ON juez.id_juez = eventoagenda.juez
+                    INNER JOIN solicitante ON solicitante.idSolicitante = eventoagenda.solicitante
                 ORDER BY
                     eventoagenda.id_evento_agenda ASC;";
     
@@ -268,8 +290,10 @@ require_once 'conexion.php';
                     sala.nombre_sala,
                     juez.nom_juez,
                     juez.id_juez,
+                    solicitante.idSolicitante,
+                    solicitante.TipoSolicitante,
                     eventoagenda.fecha,
-                    eventoagenda.hora,
+                    DATE_FORMAT(eventoagenda.hora, '%H:%i') AS hora,
                     eventoagenda.evento
                 FROM
                     eventoagenda
@@ -279,6 +303,7 @@ require_once 'conexion.php';
                     INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
                     INNER JOIN sala ON sala.id_sala = eventoagenda.sala
                     INNER JOIN juez ON juez.id_juez = eventoagenda.juez
+                    INNER JOIN solicitante ON solicitante.idSolicitante = eventoagenda.solicitante
                 WHERE
                     eventoagenda.id_evento_agenda = '$id_evento_agenda';";
 
@@ -356,10 +381,10 @@ require_once 'conexion.php';
     }
     
     
-     function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $fecha, $hora, $evento){
+     function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento){
         $conn = conexion();
         $sql = "UPDATE eventoagenda
-                SET  tipoAudiencia = '$tipoAud', sala = '$sala' , juez = '$juez' , fecha = '$fecha' , hora = '$hora' , evento = '$evento'
+                SET  tipoAudiencia = '$tipoAud', sala = '$sala' , juez = '$juez', solicitante ='$solicitante' , fecha = '$fecha' , hora = '$hora' , evento = '$evento'
                 WHERE id_evento_agenda = '$id_evento_agenda'";
         $response = "";
 

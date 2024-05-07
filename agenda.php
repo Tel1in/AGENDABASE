@@ -12,6 +12,7 @@ require_once 'funcionesSql.php';
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
@@ -19,6 +20,8 @@ require_once 'funcionesSql.php';
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script> 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+
     
 
 <script>
@@ -298,10 +301,7 @@ require_once 'funcionesSql.php';
                         form.querySelector('#s120').innerHTML = '';
                         form.querySelector('#s120').appendChild(option);
 
-                        form.querySelector('#s30').innerHTML = '';
-                        form.querySelector('#sala1').innerHTML = '';
-                        form.querySelector('#juez1').innerHTML = '';
-
+                     
                         var optionGuardada = document.createElement('option');
                         optionGuardada.value = data.id_tipo_audiencia;
                         optionGuardada.textContent = data.nom_tipo_audiencia;
@@ -319,6 +319,12 @@ require_once 'funcionesSql.php';
                         optionGuardada3.textContent = data.nom_juez;
                         optionGuardada3.selected = true;
                         form.querySelector('#juez1').appendChild(optionGuardada3);
+
+                        var optionGuardada4 = document.createElement('option');
+                        optionGuardada4.value = data.idSolicitante;
+                        optionGuardada4.textContent = data.TipoSolicitante;
+                        optionGuardada4.selected = true;
+                        form.querySelector('#sol11').appendChild(optionGuardada4);
 
                         form.querySelector('#d10').value = data.fecha;
                         form.querySelector('#h10').value = data.hora;
@@ -672,6 +678,7 @@ require_once 'funcionesSql.php';
                             <th scope="col">Audiencia</th>
                             <th scope="col">Sala</th>
                             <th scope="col">Juez</th>
+                            <th scope="col">Solicitante</th>
                             <th scope="col">Hora</th>
                             <th scope="col">fecha</th>
                             <th scope="col">Evento</th>
@@ -690,6 +697,7 @@ require_once 'funcionesSql.php';
                                             <td><?php echo $row["nom_tipo_audiencia"]?> </td>
                                             <td><?php echo $row["nombre_sala"]?> </td>
                                             <td><?php echo $row["nom_juez"]?> </td>
+                                            <td><?php echo $row["Solicitante"]?> </td>
                                             <td><?php echo $row["fecha"]?> </td>
                                             <?php $horaFormato12 = date("h:i A", strtotime($row["hora"]))?>
                                             <td><?php echo $horaFormato12 ?></td>
@@ -728,7 +736,7 @@ require_once 'funcionesSql.php';
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="insertarEvento.php" method="post">
+                                <form action="insertarEvento.php" method="post" id="insertaForm" name="insertaForm">
                                     <label for="s1">Expediente</label>
                                     <select class="form-select" name="s1" id="s1" required>
                                     <option value="" selected disabled>Selecciona un tipo de expediente</option>
@@ -744,7 +752,7 @@ require_once 'funcionesSql.php';
                                     <option value="" selected disabled>Seleccione</option>
                                     </select>
                                     <div class="form-text" id="basic-addon4">Seleccione un tipo de expediente para habilitar</div>
-                                    <label for="s12">Inputado</label>
+                                    <label for="s12">Imputado</label>
                                     <select  class="form-select" name="s12" id="s12" required>
                                     <option value="" selected disabled>Seleccione</option>
                                     </select>
@@ -773,17 +781,26 @@ require_once 'funcionesSql.php';
                                     <select name="juez" id="juez" class="form-select" required>
                                     <option value="" selected disabled>Seleccione un juez</option>
                                     <?php
-                                             $jueces = juez();
-                                             foreach ($jueces as $juez) {
+                                            $jueces = juez();
+                                            foreach ($jueces as $juez) {
                                                 echo "<option value='" . $juez["id_juez"] . "'>" . $juez["nom_juez"] . "</option>";
+                                            }
+                                    ?>
+                                    </select>
+                                    <label for="sol1">Solicitante</label>
+                                    <select name="sol1" id="sol1" class="form-select" required>
+                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                        <?php
+                                            $solicitante = solicitante();
+                                            foreach ($solicitante as $sol) {
+                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
                                             }
                                         ?>
                                     </select>
                                     <label for="d1">Fecha</label>
                                     <input type="date" id="d1" name="d1" class="form-control" required>
                                     <label for="h1">Hora</label>
-                                    <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h1" id="h1" required>
-                                    <label for="evento">Nombre Evento</label>
+                                    <input type="time" pattern="[0-9]{2}:[0-9]{2}" step="1" class="form-select" name="h1" id="h1" required>                                    <label for="evento">Nombre Evento</label>
                                     <input id="evento" name="evento" type="text" required class="form-control">
                                 
 
@@ -819,7 +836,7 @@ require_once 'funcionesSql.php';
                                     <input type="text" class="form-control" name="s10" id="s10" disabled>
                                     <label for="s110">Numero</label>
                                     <input type="text" class="form-control" name="s110" id="s110" disabled>                      
-                                    <label for="s120">Inputado</label>
+                                    <label for="s120">Imputado</label>
                                     <select  class="form-select" name="s120" id="s120" disabled>
                                     <option value="" selected disabled>Seleccione</option>
                                     </select>
@@ -853,10 +870,20 @@ require_once 'funcionesSql.php';
                                             }
                                         ?>
                                     </select>
+                                    <label for="sol11">Solicitante</label>
+                                    <select name="sol11" id="sol11" class="form-select" required>
+                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                        <?php
+                                            $solicitante = solicitante();
+                                            foreach ($solicitante as $sol) {
+                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                            }
+                                        ?>
+                                    </select>
                                     <label for="d10">Fecha</label>
                                     <input type="date" id="d10" name="d10" class="form-control" readonly>
                                     <label for="h10">Hora</label>
-                                    <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h10" id="h10" readonly>
+                                    <input type="text" class="form-select"name="h10" id="h10" required readonly>
                                     <label for="evento1">Nombre Evento</label>
                                     <input id="evento1" name="evento1" type="text" required class="form-control" readonly>
                                     <div class="modal-footer">
@@ -890,7 +917,7 @@ require_once 'funcionesSql.php';
                                     <input type="text" class="form-control" name="s100" id="s100" disabled>
                                     <label for="s1100">Numero</label>
                                     <input type="text" class="form-control" name="s1100" id="s1100" disabled>                      
-                                    <label for="s1200">Inputado</label>
+                                    <label for="s1200">Imputado</label>
                                     <select  class="form-select" name="s1200" id="s1200" disabled>
                                     <option value="" selected disabled>Seleccione</option>
                                     </select>
@@ -921,6 +948,16 @@ require_once 'funcionesSql.php';
                                              $jueces = juez();
                                              foreach ($jueces as $jue) {
                                                 echo "<option value='" . $jue["id_juez"] . "'>" . $jue["nom_juez"] . "</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                    <label for="sol111">Solicitante</label>
+                                    <select name="sol111" id="sol111" class="form-select" required>
+                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                        <?php
+                                            $solicitante = solicitante();
+                                            foreach ($solicitante as $sol) {
+                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
                                             }
                                         ?>
                                     </select>
@@ -1035,6 +1072,22 @@ require_once 'funcionesSql.php';
                 });
             } 
 
+            var optionGuardada4 = document.createElement('option');
+            optionGuardada4.value = data.idSolicitante;
+            optionGuardada4.textContent = data.TipoSolicitante;
+            optionGuardada4.selected = true;
+            document.getElementById('sol111').appendChild(optionGuardada4); 
+
+            if (Array.isArray(data.TipoSolicitante)) {
+                data.TipoSolicitante.forEach(function(solicitante) {
+                    var option = document.createElement('option');
+                    option.value = solicitante.idSolicitante;
+                    option.textContent = solicitante.TipoSolicitante;
+                    // Agregar la opción al select
+                    document.getElementById('sol111').appendChild(option);
+                });
+            } 
+
             document.getElementById('d100').value = data.fecha;
             document.getElementById('h100').value = data.hora;
             document.getElementById('evento10').value = data.evento;
@@ -1050,6 +1103,7 @@ require_once 'funcionesSql.php';
 <script src="dist/bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   $(document).ready(function() {
         // Inicializar Select2
@@ -1088,6 +1142,31 @@ require_once 'funcionesSql.php';
         });
     });
 </script>
+<script>
+    flatpickr("#h1", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true
+    });
+
+    flatpickr("#h10", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true
+    });
+
+    flatpickr("#h100", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true
+    });
+    
+</script>
+
+
 </body>
 
 </html>
