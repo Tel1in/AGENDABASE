@@ -2,6 +2,7 @@ import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { cambiarVentanas } from './cambiarVentana';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 
 
 async function obtenerEventos() {
@@ -20,7 +21,9 @@ let calendar = new Calendar(calendarEl, {
   selectable: true,
   locale: 'es',
   aspectRatio: 2,
-  plugins: [dayGridPlugin, interactionPlugin],
+  themeSystem : 'bootstrap5',
+  eventColor : '#009846',
+  plugins: [bootstrap5Plugin ,dayGridPlugin, interactionPlugin],
   dateClick: function (info) {
     const fechaSeleccionada = info.dateStr;
     fechaEventoInput.value = fechaSeleccionada;

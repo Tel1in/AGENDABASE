@@ -1,0 +1,55 @@
+/* Estilo general del botón */
+.fc-today-button {
+    color: #fff;
+    background-color: #343a40; 
+    border-color: #343a40;
+  }
+  
+  /* Estilo del botón cuando está deshabilitado */
+  .fc-today-button:disabled {
+    color: #fff; 
+    background-color: #343a40;
+    border-color: #343a40; 
+    opacity: 0.65;
+  }
+  
+  /* Estilo del botón cuando está habilitado y no se ha presionado */
+  .fc-today-button:enabled:not(:active):not(.active):hover {
+    color: #fff; 
+    background-color: #23272b; 
+    border-color: #1d2124;
+  }
+  
+  /* Estilo del botón cuando está habilitado y se ha presionado o está activo */
+  .fc-today-button:enabled:active,
+  .fc-today-button.active {
+    color: #fff; 
+    background-color: #121416;
+    border-color: #121416;
+  }
+
+  /* Estilo general de los botones */
+.fc-prev-button,
+.fc-next-button {
+  color: #fff; 
+  background-color: #343a40;
+  border-color: #343a40; 
+}
+
+/* Estilo de los botones cuando están habilitados y no se ha presionado */
+.fc-prev-button:enabled:not(:active):not(.active):hover,
+.fc-next-button:enabled:not(:active):not(.active):hover {
+  color: #fff; 
+  background-color: #23272b; 
+  border-color: #1d2124;
+}
+
+/* Estilo de los botones cuando están habilitados y se han presionado o están activos */
+.fc-prev-button:enabled:active,
+.fc-prev-button.active,
+.fc-next-button:enabled:active,
+.fc-next-button.active {
+  color: #fff;
+  background-color: #121416; 
+  border-color: #121416; 
+}

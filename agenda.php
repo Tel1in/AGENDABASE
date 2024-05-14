@@ -1,10 +1,8 @@
 <?php
 require_once 'funcionesSql.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +11,7 @@ require_once 'funcionesSql.php';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="./src/calendar.css">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
@@ -21,9 +20,6 @@ require_once 'funcionesSql.php';
     crossorigin="anonymous"></script> 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     
-
-    
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const myModal = document.getElementById('myModal');
@@ -666,153 +662,154 @@ require_once 'funcionesSql.php';
                             </tbody>
                         </table>
                     </div>
+                    <div>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Agregar Evento
+                    </button>
+                </div>
                 </div>
                 <div id="tabla3" class="d-none">
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Exp</th>
-                            <th scope="col">Numero</th>
-                            <th scope="col">Involucrado</th>
-                            <th scope="col">Audiencia</th>
-                            <th scope="col">Sala</th>
-                            <th scope="col">Juez</th>
-                            <th scope="col">Solicitante</th>
-                            <th scope="col">Hora</th>
-                            <th scope="col">fecha</th>
-                            <th scope="col">Evento</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                    </thead>
-                    <TBody>
-                            <?php $result=obtenerDatos()?>
-                                <?php if ($result->num_rows > 0) { ?>
-                                    <?php while ($row = $result->fetch_assoc()) { ?>
-                                        <tr>
-                                            <td><?php echo $row["id_evento_agenda"]?></td>
-                                            <td><?php echo $row["nom_expediente"]?></td>
-                                            <td><?php echo $row["numero"]?> </td>
-                                            <td><?php echo $row["nombreInputado"]?> </td>
-                                            <td><?php echo $row["nom_tipo_audiencia"]?> </td>
-                                            <td><?php echo $row["nombre_sala"]?> </td>
-                                            <td><?php echo $row["nom_juez"]?> </td>
-                                            <td><?php echo $row["Solicitante"]?> </td>
-                                            <td><?php echo $row["fecha"]?> </td>
-                                            <?php $horaFormato12 = date("h:i A", strtotime($row["hora"]))?>
-                                            <td><?php echo $horaFormato12 ?></td>
-                                            <td><?php echo $row["evento"]?></td>
-                                                    <td>                                                  
-                                                        <button type='button' id='eliminarDatos' class='btn btn-outline-dark' onclick='eliminarDatos(<?php echo $row["id_evento_agenda"]; ?>)'><i class='bi bi-trash3' style='color:red'></i></button></div>          
-                                                        <button type='button' id='modificarDatos' class='btn btn-outline-dark modificarDatosBtn' data-bs-toggle="modal" data-bs-target="#exampleModal2" data-id="<?php echo $row["id_evento_agenda"]; ?>">
-                                                            <i class="bi bi-arrow-repeat" style='color:blue'></i>
-                                                        </button>                                                                  
-                                                    </td>
-												<?php } ?>
-                                        </tr>
-											<?php } else { ?>
-												<tr>
-													<td colspan="5" class="text-center">No se encontraron resultados</td>
-												</tr>
-											<?php } ?>
-                    </TBody>
-                </table>
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Exp</th>
+                                <th scope="col">Numero</th>
+                                <th scope="col">Involucrado</th>
+                                <th scope="col">Audiencia</th>
+                                <th scope="col">Sala</th>
+                                <th scope="col">Juez</th>
+                                <th scope="col">Solicitante</th>
+                                <th scope="col">Hora</th>
+                                <th scope="col">fecha</th>
+                                <th scope="col">Evento</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <TBody>
+                                <?php $result=obtenerDatos()?>
+                                    <?php if ($result->num_rows > 0) { ?>
+                                        <?php while ($row = $result->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td><?php echo $row["id_evento_agenda"]?></td>
+                                                <td><?php echo $row["nom_expediente"]?></td>
+                                                <td><?php echo $row["numero"]?> </td>
+                                                <td><?php echo $row["nombreInputado"]?> </td>
+                                                <td><?php echo $row["nom_tipo_audiencia"]?> </td>
+                                                <td><?php echo $row["nombre_sala"]?> </td>
+                                                <td><?php echo $row["nom_juez"]?> </td>
+                                                <td><?php echo $row["Solicitante"]?> </td>
+                                                <td><?php echo $row["fecha"]?> </td>
+                                                <?php $horaFormato12 = date("h:i A", strtotime($row["hora"]))?>
+                                                <td><?php echo $horaFormato12 ?></td>
+                                                <td><?php echo $row["evento"]?></td>
+                                                        <td>                                                  
+                                                            <button type='button' id='eliminarDatos' class='btn btn-outline-dark' onclick='eliminarDatos(<?php echo $row["id_evento_agenda"]; ?>)'><i class='bi bi-trash3' style='color:red'></i></button></div>          
+                                                            <button type='button' id='modificarDatos' class='btn btn-outline-dark modificarDatosBtn' data-bs-toggle="modal" data-bs-target="#exampleModal2" data-id="<?php echo $row["id_evento_agenda"]; ?>">
+                                                                <i class="bi bi-arrow-repeat" style='color:blue'></i>
+                                                            </button>                                                                  
+                                                        </td>
+                                                    <?php } ?>
+                                            </tr>
+                                                <?php } else { ?>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">No se encontraron resultados</td>
+                                                    </tr>
+                                                <?php } ?>
+                        </TBody>
+                    </table>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div id="myModal" >
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Agregar Evento
-                </button>
-
-                <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">AGREGAR EVENTO</h5>
-
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
+            <div id="myModal">
+                    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-modal="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">AGREGAR EVENTO</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
                                 <form action="insertarEvento.php" method="post" id="insertaForm" name="insertaForm">
-                                    <label for="s1">Expediente</label>
-                                    <select class="form-select" name="s1" id="s1" required>
-                                    <option value="" selected disabled>Selecciona un tipo de expediente</option>
-                                        <?php
-                                             $exp = expediente();
-                                             foreach ($exp as $exp1) {
-                                                echo "<option value='" . $exp1["id_tipo_expediente"] . "'>" . $exp1["nom_expediente"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="s11">Numero</label>
-                                    <select  class="form-select" name="s11" id="s11" required>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    </select>
-                                    <div class="form-text" id="basic-addon4">Seleccione un tipo de expediente para habilitar</div>
-                                    <label for="s12">Imputado</label>
-                                    <select  class="form-select" name="s12" id="s12" required>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    </select>
-                                    <div class="form-text" id="basic-addon4">Seleccione un numero para habilitar</div>
-                                    <label for="s3">Tipo Audiencia</label>
-                                    <select name="s3" id="s3" class="form-select" required>
-                                    <option value="" selected disabled>Selecciona una audiencia</option>
-                                    <?php
-                                             $audiencia = audiencias();
-                                             foreach ($audiencia as $audi) {
-                                                echo "<option value='" . $audi["id_tipo_audiencia"] . "'>" . $audi["nom_tipo_audiencia"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="sala">Sala</label>
-                                    <select name="sala" id="sala" class="form-select" required>
-                                    <option value="" selected disabled>Selecciona una sala</option>
-                                    <?php
-                                             $salas = sala();
-                                             foreach ($salas as $sal) {
-                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="juez">Juez</label>
-                                    <select name="juez" id="juez" class="form-select" required>
-                                    <option value="" selected disabled>Seleccione un juez</option>
-                                    <?php
-                                            $jueces = juez();
-                                            foreach ($jueces as $juez) {
-                                                echo "<option value='" . $juez["id_juez"] . "'>" . $juez["nom_juez"] . "</option>";
-                                            }
-                                    ?>
-                                    </select>
-                                    <label for="sol1">Solicitante</label>
-                                    <select name="sol1" id="sol1" class="form-select" required>
-                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
-                                        <?php
-                                            $solicitante = solicitante();
-                                            foreach ($solicitante as $sol) {
-                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="d1">Fecha</label>
-                                    <input type="date" id="d1" name="d1" class="form-control" required>
-                                    <label for="h1">Hora</label>
-                                    <input type="time" pattern="[0-9]{2}:[0-9]{2}" step="1" class="form-select" name="h1" id="h1" required>                                    <label for="evento">Nombre Evento</label>
-                                    <input id="evento" name="evento" type="text" required class="form-control">
-                                
-
+                                    <div class="modal-body row">
+                                        <div class="col-md-6">
+                                            <!-- Campos de la sección izquierda -->
+                                            <label for="s1">Expediente</label>
+                                            <select class="form-select" name="s1" id="s1" required>
+                                                <option value="" selected disabled>Selecciona un tipo de expediente</option>
+                                                <?php
+                                                $exp = expediente();
+                                                foreach ($exp as $exp1) {
+                                                    echo "<option value='" . $exp1["id_tipo_expediente"] . "'>" . $exp1["nom_expediente"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <label for="s11">Numero</label>
+                                            <select class="form-select" name="s11" id="s11" required>
+                                                <option value="" selected disabled>Seleccione</option>
+                                            </select>
+                                            <div class="form-text" id="basic-addon4">Seleccione un tipo de expediente para habilitar</div>
+                                            <label for="s12">Imputado</label>
+                                            <select class="form-select" name="s12" id="s12" required>
+                                                <option value="" selected disabled>Seleccione</option>
+                                            </select>
+                                            <div class="form-text" id="basic-addon4">Seleccione un numero para habilitar</div>
+                                            <label for="sol1">Solicitante</label>
+                                            <select name="sol1" id="sol1" class="form-select" required>
+                                                <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                                <?php
+                                                $solicitante = solicitante();
+                                                foreach ($solicitante as $sol) {
+                                                    echo "<option value='" . $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <label for="s3">Tipo Audiencia</label>
+                                            <select name="s3" id="s3" class="form-select" required>
+                                                <option value="" selected disabled>Selecciona una audiencia</option>
+                                                <?php
+                                                $audiencia = audiencias();
+                                                foreach ($audiencia as $audi) {
+                                                    echo "<option value='" . $audi["id_tipo_audiencia"] . "'>" . $audi["nom_tipo_audiencia"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <label for="sala">Sala</label>
+                                            <select name="sala" id="sala" class="form-select" required>
+                                                <option value="" selected disabled>Selecciona una sala</option>
+                                                <?php
+                                                $salas = sala();
+                                                foreach ($salas as $sal) {
+                                                    echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <label for="juez">Juez</label>
+                                            <select name="juez" id="juez" class="form-select" required>
+                                                <option value="" selected disabled>Seleccione un juez</option>
+                                                <?php
+                                                $jueces = juez();
+                                                foreach ($jueces as $juez) {
+                                                    echo "<option value='" . $juez["id_juez"] . "'>" . $juez["nom_juez"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <label for="d1">Fecha</label>
+                                            <input type="date" id="d1" name="d1" class="form-control" required>
+                                            <label for="h1">Hora</label>
+                                            <input type="time" pattern="[0-9]{2}:[0-9]{2}" step="1" class="form-select" name="h1" id="h1" required>
+                                            <label for="evento">Nombre Evento</label>
+                                            <input id="evento" name="evento" type="text" required class="form-control">
+                                        </div>
+                                    </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                         <button type="reset" class="btn btn-danger">Limpiar Formulario</button>
-                                        <button type="submit" class="btn btn-primary">Insertar Datos</button>
+                                        <button type="submit" class="btn btn-success">Insertar Datos</button>
                                     </div>
                                 </form>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -820,80 +817,81 @@ require_once 'funcionesSql.php';
 
             <div id="myModal2" >
                 <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">EVENTO</h5>
-
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form action="modificar_evento.php" method="post" id="modificarFormulario">
-                                    <input type="hidden" id="modal1" name="modal" value="1">
-                                    <input type="hidden" class="form-control" name="idE" id="idE">
-                                    <label for="s10">Expediente</label>
-                                    <input type="text" class="form-control" name="s10" id="s10" disabled>
-                                    <label for="s110">Numero</label>
-                                    <input type="text" class="form-control" name="s110" id="s110" disabled>                      
-                                    <label for="s120">Imputado</label>
-                                    <select  class="form-select" name="s120" id="s120" disabled>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    </select>
-                                    <label for="s30">Tipo Audiencia</label>
-                                    <select name="s30" id="s30" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $audiencia = audiencias();
-                                             foreach ($audiencia as $aud) {
-                                                echo "<option value='" . $aud["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
-                                            }
-                                    ?>
-                                    </select>
-                                    <label for="sala1">Sala</label>
-                                    <select name="sala1" id="sala1" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $salas = sala();
-                                             foreach ($salas as $sal) {
-                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
-                                            }
-                                     ?>
-                                    </select>
-                                    <label for="juez1">Juez</label>
-                                    <select name="juez1" id="juez1" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $jueces = juez();
-                                             foreach ($jueces as $juec) {
-                                                echo "<option value='" . $juec["id_juez"] . "'>" . $juec["nom_juez"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="sol11">Solicitante</label>
-                                    <select name="sol11" id="sol11" class="form-select" required>
-                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                            <form action="modificar_evento.php" method="post" id="modificarFormulario">                
+                                <div class="modal-body row">
+                                    <div class="col-md-6">
+                                        <input type="hidden" id="modal1" name="modal" value="1">
+                                        <input type="hidden" class="form-control" name="idE" id="idE">
+                                        <label for="s10">Expediente</label>
+                                        <input type="text" class="form-control" name="s10" id="s10" disabled>
+                                        <label for="s110">Numero</label>
+                                        <input type="text" class="form-control" name="s110" id="s110" disabled>                      
+                                        <label for="s120">Imputado</label>
+                                        <select  class="form-select" name="s120" id="s120" disabled>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        </select>
+                                        <label for="sol11">Solicitante</label>
+                                        <select name="sol11" id="sol11" class="form-select" required>
+                                        <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                            <?php
+                                                $solicitante = solicitante();
+                                                foreach ($solicitante as $sol) {
+                                                    echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                        <label for="s30">Tipo Audiencia</label>
+                                        <select name="s30" id="s30" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
                                         <?php
-                                            $solicitante = solicitante();
-                                            foreach ($solicitante as $sol) {
-                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
-                                            }
+                                                $audiencia = audiencias();
+                                                foreach ($audiencia as $aud) {
+                                                    echo "<option value='" . $aud["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
+                                                }
                                         ?>
-                                    </select>
-                                    <label for="d10">Fecha</label>
-                                    <input type="date" id="d10" name="d10" class="form-control" readonly>
-                                    <label for="h10">Hora</label>
-                                    <input type="text" class="form-select"name="h10" id="h10" required readonly>
-                                    <label for="evento1">Nombre Evento</label>
-                                    <input id="evento1" name="evento1" type="text" required class="form-control" readonly>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-primary" id="modificarBtn">Modificar</button>
-                         
+                                        </select>
                                     </div>
-                                </form>
-                            </div>
-
+                                    <div class="col-md-6">
+                                        <label for="sala1">Sala</label>
+                                        <select name="sala1" id="sala1" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        <?php
+                                                $salas = sala();
+                                                foreach ($salas as $sal) {
+                                                    echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
+                                                }
+                                        ?>
+                                        </select>
+                                        <label for="juez1">Juez</label>
+                                        <select name="juez1" id="juez1" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        <?php
+                                                $jueces = juez();
+                                                foreach ($jueces as $juec) {
+                                                    echo "<option value='" . $juec["id_juez"] . "'>" . $juec["nom_juez"] . "</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                        <label for="d10">Fecha</label>
+                                        <input type="date" id="d10" name="d10" class="form-control" readonly>
+                                        <label for="h10">Hora</label>
+                                        <input type="text" class="form-select"name="h10" id="h10" required readonly>
+                                        <label for="evento1">Nombre Evento</label>
+                                        <input id="evento1" name="evento1" type="text" required class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-success" id="modificarBtn">Modificar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -901,7 +899,7 @@ require_once 'funcionesSql.php';
 
             <div id="myModal3" >
                 <div class="modal fade" id="exampleModal3" aria-labelledby="exampleModalLabel">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">EVENTO</h5>
@@ -909,72 +907,75 @@ require_once 'funcionesSql.php';
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form action="modificar_evento.php" method="post" id="modificarFormulario2">
-                                    <input type="hidden" id="modal2" name="modal" value="2">
-                                    <input type="hidden" class="form-control" name="idE0" id="idE0">
-                                    <label for="s100">Expediente</label>
-                                    <input type="text" class="form-control" name="s100" id="s100" disabled>
-                                    <label for="s1100">Numero</label>
-                                    <input type="text" class="form-control" name="s1100" id="s1100" disabled>                      
-                                    <label for="s1200">Imputado</label>
-                                    <select  class="form-select" name="s1200" id="s1200" disabled>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    </select>
-                                    <label for="s300">Tipo Audiencia</label>
-                                    <select name="s300" id="s300" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $audiencia = audiencias();
-                                             foreach ($audiencia as $aud) {
-                                                echo "<option value='" . $aud["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
-                                            }
-                                    ?>
-                                    </select>
-                                    <label for="sala10">Sala</label>
-                                    <select name="sala10" id="sala10" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $salas = sala();
-                                             foreach ($salas as $sal) {
-                                                echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
-                                            }
-                                     ?>
-                                    </select>
-                                    <label for="juez10">Juez</label>
-                                    <select name="juez10" id="juez10" class="form-select" readonly>
-                                    <option value="" selected disabled>Seleccione</option>
-                                    <?php
-                                             $jueces = juez();
-                                             foreach ($jueces as $jue) {
-                                                echo "<option value='" . $jue["id_juez"] . "'>" . $jue["nom_juez"] . "</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                    <label for="sol111">Solicitante</label>
-                                    <select name="sol111" id="sol111" class="form-select" required>
-                                    <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                            <form action="modificar_evento.php" method="post" id="modificarFormulario2">
+                                <div class="modal-body row">
+                                    <div class="col-md-6">
+                                        <input type="hidden" id="modal2" name="modal" value="2">
+                                        <input type="hidden" class="form-control" name="idE0" id="idE0">
+                                        <label for="s100">Expediente</label>
+                                        <input type="text" class="form-control" name="s100" id="s100" disabled>
+                                        <label for="s1100">Numero</label>
+                                        <input type="text" class="form-control" name="s1100" id="s1100" disabled>                      
+                                        <label for="s1200">Imputado</label>
+                                        <select  class="form-select" name="s1200" id="s1200" disabled>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        </select>
+                                        <label for="s300">Tipo Audiencia</label>
+                                        <select name="s300" id="s300" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
                                         <?php
-                                            $solicitante = solicitante();
-                                            foreach ($solicitante as $sol) {
-                                                echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
-                                            }
+                                                $audiencia = audiencias();
+                                                foreach ($audiencia as $aud) {
+                                                    echo "<option value='" . $aud["id_tipo_audiencia"] . "'>" . $aud["nom_tipo_audiencia"] . "</option>";
+                                                }
                                         ?>
-                                    </select>
-                                    <label for="d100">Fecha</label>
-                                    <input type="date" id="d100" name="d100" class="form-control" readonly>
-                                    <label for="h100">Hora</label>
-                                    <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" readonly>
-                                    <label for="evento10">Nombre Evento</label>
-                                    <input id="evento10" name="evento10" type="text" required class="form-control" readonly>
+                                        </select>
+                                        <label for="sala10">Sala</label>
+                                        <select name="sala10" id="sala10" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        <?php
+                                                $salas = sala();
+                                                foreach ($salas as $sal) {
+                                                    echo "<option value='" . $sal["id_sala"] . "'>" . $sal["nombre_sala"] . "</option>";
+                                                }
+                                        ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="juez10">Juez</label>
+                                        <select name="juez10" id="juez10" class="form-select" readonly>
+                                        <option value="" selected disabled>Seleccione</option>
+                                        <?php
+                                                $jueces = juez();
+                                                foreach ($jueces as $jue) {
+                                                    echo "<option value='" . $jue["id_juez"] . "'>" . $jue["nom_juez"] . "</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                        <label for="sol111">Solicitante</label>
+                                        <select name="sol111" id="sol111" class="form-select" required>
+                                        <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
+                                            <?php
+                                                $solicitante = solicitante();
+                                                foreach ($solicitante as $sol) {
+                                                    echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                        <label for="d100">Fecha</label>
+                                        <input type="date" id="d100" name="d100" class="form-control" readonly>
+                                        <label for="h100">Hora</label>
+                                        <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" readonly>
+                                        <label for="evento10">Nombre Evento</label>
+                                        <input id="evento10" name="evento10" type="text" required class="form-control" readonly>
+                                    </div>
+                                </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-primary" id="modificarBtn2">Modificar</button>
+                                        <button type="button" class="btn btn-success" id="modificarBtn2">Modificar</button>
                                         <button type="button" class="btn btn-danger" id="eleminarBtnModa" onclick="eliminarDatos(document.getElementById('idE0').value)">Eliminar</button>
-                                    </div>
-                                </form>
-                            </div>
-
+                                    </div>    
+                            </form>
                         </div>
                     </div>
                 </div>
