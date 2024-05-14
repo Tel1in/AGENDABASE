@@ -203,7 +203,7 @@ require_once 'conexion.php';
                 }
             }
         } else {
-            echo "Error: La consulta SQL está vacía.";
+            echo "Error: La consulta SQL esta vacia.";
         }
 
         $conn->close();

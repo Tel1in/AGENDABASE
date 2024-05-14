@@ -1,8 +1,8 @@
 <?php
 require_once 'funcionesSql.php';
 
-if (isset($_POST['valor1'])) {
-    $id = $_POST['valor1']; // Obtén el valor seleccionado del segundo select
+if (isset($_GET['valor1'])) {
+    $id = $_GET['valor1']; // Obtén el valor seleccionado del segundo select
     $exp3 = expediente3($id);
 
     echo "<option value='' selected disabled>Seleccione</option>";

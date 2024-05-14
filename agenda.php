@@ -750,7 +750,7 @@ require_once 'funcionesSql.php';
                                             </select>
                                             <div class="form-text" id="basic-addon4">Seleccione un tipo de expediente para habilitar</div>
                                             <label for="s12">Imputado</label>
-                                            <select class="form-select" name="s12" id="s12" required>
+                                            <select class="form-select" name="s12" id="s12"  required>
                                                 <option value="" selected disabled>Seleccione</option>
                                             </select>
                                             <div class="form-text" id="basic-addon4">Seleccione un numero para habilitar</div>
@@ -1144,6 +1144,69 @@ require_once 'funcionesSql.php';
     });
 </script>
 <script>
+  $(document).ready(function() {
+        // Inicializar Select2
+        var select2Instance = $('#s11').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+
+        // Manejar el cambio de valor en Select2
+        $('#s11').on('change', function() {
+            var valorSeleccionado = $(this).val();
+            cargarSegundoSelect(valorSeleccionado);
+        });
+
+        // Cargar las opciones del segundo select basado en el valor seleccionado
+        function cargarSegundoSelect(valorSeleccionado) {
+                fetch('llenarExp2.php?valor1=' + valorSeleccionado)
+                .then(response => response.text())
+                .then(data => {
+                    $('#s12').html(data);
+                })
+                .catch(error => {
+                    console.error('Error al cargar las opciones:', error);
+                });
+            }
+
+            // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
+        $('button[type="reset"]').on('click', function() {
+            select2Instance.val(null).trigger('change');
+        });
+
+        // Reiniciar Select2 cuando se cierra el modal
+        $('#exampleModal').on('hidden.bs.modal', function() {
+            select2Instance.val(null).trigger('change');
+        });
+    });
+</script>
+<script>
+  $(document).ready(function() {
+        // Inicializar Select2
+        var select2Instance = $('#s12').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+
+        // Manejar el cambio de valor en Select2
+        $('#s12').on('change', function() {
+            var valorSeleccionado = $(this).val();
+        });
+
+            // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
+        $('button[type="reset"]').on('click', function() {
+            select2Instance.val(null).trigger('change');
+        });
+
+        // Reiniciar Select2 cuando se cierra el modal
+        $('#exampleModal').on('hidden.bs.modal', function() {
+            select2Instance.val(null).trigger('change');
+        });
+    });
+</script>
+<script>
     flatpickr("#h1", {
     enableTime: true,
     noCalendar: true,
@@ -1166,6 +1229,7 @@ require_once 'funcionesSql.php';
     });
     
 </script>
+
 
 
 </body>
