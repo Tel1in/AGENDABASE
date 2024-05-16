@@ -20,144 +20,9 @@ require_once 'funcionesSql.php';
     crossorigin="anonymous"></script> 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const myModal = document.getElementById('myModal');
-
-        myModal.addEventListener('shown.bs.modal', () => {
-        });
-    });
-</script>
 
 
-
-<style>
-    .initial-hidden {
-        display: none;
-    }
-</style>
-
-
-<script src="funciones.js"></script>
-<script src="salas.js"></script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('s1').addEventListener('change', function () {
-            var selectedValue = this.value;
-
-            fetch('llenarExp.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'id_tipo_expediente=' + selectedValue, 
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('s11').innerHTML = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-    });
-</script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('s11').addEventListener('change', function () {
-            var selectedValue = this.value;
-
-            fetch('llenarExp2.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'valor1=' + selectedValue, // Enviar el valor seleccionado
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('s12').innerHTML = data; // Llenar el tercer select con las opciones recibidas
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('s110').addEventListener('change', function () {
-            var selectedValue = this.value;
-
-            fetch('llenarExp2.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'valor1=' + selectedValue, // Enviar el valor seleccionado
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('s120').innerHTML = data; // Llenar el tercer select con las opciones recibidas
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    });
-</script>
-
-
-<!-- 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var selectAudiencia = document.getElementById("s3");
-                var inputAudiencia = document.getElementById("inputAudiencia");
-                selectAudiencia.addEventListener("change", function () {
-                    inputAudiencia.disabled = (selectAudiencia.value === "");
-                });
-            });
-    </script>
--->
-
-<script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var inputAudiencia = document.getElementById("inputAudiencia");
-            function deshabilitarInput() {
-                
-            }
-            document.querySelector("button[type='reset']").addEventListener("click", deshabilitarInput);
-
-            var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
-            modal._element.addEventListener("hidden.bs.modal", function () {
-                document.querySelector("form").reset();
-                deshabilitarInput();
-            });
-        });
-        
-</script>
-
+<!--LLAMADA A INSERTAR DATOS-->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var form = document.querySelector("form");
@@ -187,6 +52,8 @@ require_once 'funcionesSql.php';
    });
 </script>
 
+
+<!--LLAMADA A MODIFICAR DATOS-->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var modificarForm = document.getElementById("modificarFormulario");
@@ -242,27 +109,38 @@ require_once 'funcionesSql.php';
     });
 </script>
 
+<!--LLAMADA A ELIMINAR DATOS-->
 <script>
     function eliminarDatos(id_evento_agenda) {
-        var confirmacion = confirm('¿Estás seguro de que deseas eliminar este evento?');
-
-        if (confirmacion) {
-            fetch('eliminar_evento.php?id_evento_agenda=' + id_evento_agenda)
-                .then(response => response.text())
-                .then(data => {
-                    swal("Evento Eliminado con Exito: "+ data, "CONTINUAR", "success")
-                    window.location.reload();
-                })
-                .catch(error => {
-                    alert('Error: Hubo un problema al eliminar el evento');
-                    console.error(error);
+    swal({
+        title: "¿Estás seguro?",
+        text: "Esta acción eliminará permanentemente el evento",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+        fetch('eliminar_evento.php?id_evento_agenda=' + id_evento_agenda)
+            .then(response => response.text())
+            .then(data => {
+            swal("¡Eliminado!", "El evento ha sido eliminado correctamente.", "success")
+                .then(() => {
+                window.location.reload();
                 });
+            })
+            .catch(error => {
+            swal("Error", "Hubo un problema al eliminar el evento", "error");
+            console.error(error);
+            });
         } else {
-            alert('Eliminación cancelada');
+        swal("Cancelado", "La eliminación del evento ha sido cancelada", "info");
         }
+    });
     }
 </script>
 
+<!--LLAMADA A LLENAR FORM TABLA3-->
 <script>
    document.addEventListener('DOMContentLoaded', function () {
         var modificarDatosBtns = document.querySelectorAll('.modificarDatosBtn');
@@ -392,11 +270,14 @@ require_once 'funcionesSql.php';
     });
 </script>
 
+<!--CAMBIO DE BOOTNES MODAL-->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
             var modificarBtn1 = document.getElementById("modificarBtn2");
             var modalFooter1 = document.querySelector("#exampleModal3 .modal-footer");
-            var inputs1 = document.querySelectorAll("#exampleModal3 input");
+            var inputs1 = document.querySelectorAll("#exampleModal3 input:not(#s100, #s1100, #s1200)"); 
+            var selects1 = document.querySelectorAll("#exampleModal3 select:not(#s1200)"); 
+            var horaInput = document.getElementById("h100"); 
             var modal = document.getElementById('exampleModal3');
             var inputs = document.querySelectorAll("#exampleModal3 input");
 
@@ -404,10 +285,18 @@ require_once 'funcionesSql.php';
             function mostrarBotonesEdicion()  {
                 
                 modificarBtn1.removeEventListener('click', mostrarBotonesEdicion);
-                  // Habilitar la edición de los campos de entrada
-                for (var i = 0; i < inputs.length; i++) {
-                    inputs[i].readOnly = false;
+                   // Habilitar la edición de los campos de entrada (excepto "Expediente", "Número" e "Imputado")
+                for (var i = 0; i < inputs1.length; i++) {
+                    inputs1[i].readOnly = false;
                 }
+
+                for (var i = 0; i < selects1.length; i++) {
+                    selects1[i].disabled = false;
+                }
+     
+                // Habilitar la edición del campo de hora
+                horaInput.disabled = false;
+                flatpickr("#h100", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true });
 
                 // Crear botón "Cancelar"
                 var cancelarBtn1 = document.createElement("button");
@@ -417,9 +306,13 @@ require_once 'funcionesSql.php';
                 cancelarBtn1.addEventListener("click", function () {
                     restaurarBotonesInicio();
                     // Restaurar los campos de entrada a solo lectura
-                    for (var i = 0; i < inputs.length; i++) {
-                        inputs[i].readOnly = true;
+                    for (var i = 0; i < inputs1.length; i++) {
+                        inputs1[i].readOnly = true;
                     }
+                    for (var i = 0; i < selects1.length; i++) {
+                        selects1[i].disabled = true;
+                    }
+                    horaInput.disabled = true;
                 });
 
                 // Crear botón "Confirmar"
@@ -480,9 +373,6 @@ require_once 'funcionesSql.php';
             });
     });
 </script>
-
-
-
 
 <title>AGENDA V1</title>
 </head>
@@ -921,7 +811,7 @@ require_once 'funcionesSql.php';
                                         <option value="" selected disabled>Seleccione</option>
                                         </select>
                                         <label for="s300">Tipo Audiencia</label>
-                                        <select name="s300" id="s300" class="form-select" readonly>
+                                        <select name="s300" id="s300" class="form-select" disabled>
                                         <option value="" selected disabled>Seleccione</option>
                                         <?php
                                                 $audiencia = audiencias();
@@ -931,7 +821,7 @@ require_once 'funcionesSql.php';
                                         ?>
                                         </select>
                                         <label for="sala10">Sala</label>
-                                        <select name="sala10" id="sala10" class="form-select" readonly>
+                                        <select name="sala10" id="sala10" class="form-select" disabled>
                                         <option value="" selected disabled>Seleccione</option>
                                         <?php
                                                 $salas = sala();
@@ -943,7 +833,7 @@ require_once 'funcionesSql.php';
                                     </div>
                                     <div class="col-md-6">
                                         <label for="juez10">Juez</label>
-                                        <select name="juez10" id="juez10" class="form-select" readonly>
+                                        <select name="juez10" id="juez10" class="form-select" disabled>
                                         <option value="" selected disabled>Seleccione</option>
                                         <?php
                                                 $jueces = juez();
@@ -953,7 +843,7 @@ require_once 'funcionesSql.php';
                                             ?>
                                         </select>
                                         <label for="sol111">Solicitante</label>
-                                        <select name="sol111" id="sol111" class="form-select" required>
+                                        <select name="sol111" id="sol111" class="form-select" disabled required>
                                         <option value="" selected disabled>Seleccione un Tipo de Solicitante</option>
                                             <?php
                                                 $solicitante = solicitante();
@@ -965,7 +855,7 @@ require_once 'funcionesSql.php';
                                         <label for="d100">Fecha</label>
                                         <input type="date" id="d100" name="d100" class="form-control" readonly>
                                         <label for="h100">Hora</label>
-                                        <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" readonly>
+                                        <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" disabled>
                                         <label for="evento10">Nombre Evento</label>
                                         <input id="evento10" name="evento10" type="text" required class="form-control" readonly>
                                     </div>
@@ -986,7 +876,6 @@ require_once 'funcionesSql.php';
 
 <script>
         function abrirModal(id_evento_agenda) {
-        // Realizar una solicitud para obtener los detalles del evento
         fetch('eventosAgenda.php', {
             method: 'POST',
             body: new URLSearchParams({
@@ -999,7 +888,6 @@ require_once 'funcionesSql.php';
         })
         .then(response => response.json())
         .then(data => {
-            // Llenar los campos del modal con los detalles del evento
             console.log('Datos del evento recibidos:', data);
             document.getElementById('idE0').value = data.id_evento_agenda;
             document.getElementById('s100').value = data.nom_expediente;
@@ -1029,8 +917,6 @@ require_once 'funcionesSql.php';
                     var option = document.createElement('option');
                     option.value = audiencia.id_tipo_audiencia;
                     option.textContent = audiencia.nom_tipo_audiencia;
-
-                    // Agregar la opción al select
                     document.getElementById('s300').appendChild(option);
                 });
             } 
@@ -1049,8 +935,6 @@ require_once 'funcionesSql.php';
                     var option = document.createElement('option');
                     option.value = sala.id_sala;
                     option.textContent = sala.nom_tipo_audiencia;
-
-                    // Agregar la opción al select
                     document.getElementById('sala10').appendChild(option);
                 });
             } 
@@ -1102,107 +986,89 @@ require_once 'funcionesSql.php';
     }
 </script>
 <script src="dist/bundle.js"></script>
+<script src="funciones.js"></script>
+<script src="salas.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-  $(document).ready(function() {
-        // Inicializar Select2
-        var select2Instance = $('#s1').select2({
+    $(document).ready(function() {
+        // Inicializar Select2 para s1
+        var select2Instance1 = $('#s1').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             placeholder: $(this).data('placeholder')
         });
 
-        // Manejar el cambio de valor en Select2
+        // Manejar el cambio de valor en Select2 para s1
         $('#s1').on('change', function() {
             var valorSeleccionado = $(this).val();
-            cargarSegundoSelect(valorSeleccionado);
+            cargarSegundoSelect(valorSeleccionado, '#s11');
+            $('#s11').prop('disabled', false); 
         });
 
-        // Cargar las opciones del segundo select basado en el valor seleccionado
-        function cargarSegundoSelect(valorSeleccionado) {
-                fetch('llenarExp.php?id_tipo_expediente=' + valorSeleccionado)
-                .then(response => response.text())
-                .then(data => {
-                    $('#s11').html(data);
-                })
-                .catch(error => {
-                    console.error('Error al cargar las opciones:', error);
-                });
-            }
-
-            // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
-        $('button[type="reset"]').on('click', function() {
-            select2Instance.val(null).trigger('change');
-        });
-
-        // Reiniciar Select2 cuando se cierra el modal
-        $('#exampleModal').on('hidden.bs.modal', function() {
-            select2Instance.val(null).trigger('change');
-        });
-    });
-</script>
-<script>
-  $(document).ready(function() {
-        // Inicializar Select2
-        var select2Instance = $('#s11').select2({
+        // Inicializar Select2 para s11
+        var select2Instance2 = $('#s11').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             placeholder: $(this).data('placeholder')
         });
+        $('#s11').prop('disabled', true);
 
-        // Manejar el cambio de valor en Select2
+        // Manejar el cambio de valor en Select2 para s11
         $('#s11').on('change', function() {
             var valorSeleccionado = $(this).val();
-            cargarSegundoSelect(valorSeleccionado);
+            cargarSegundoSelect(valorSeleccionado, '#s12');
+            $('#s12').prop('disabled', false); 
         });
 
-        // Cargar las opciones del segundo select basado en el valor seleccionado
-        function cargarSegundoSelect(valorSeleccionado) {
-                fetch('llenarExp2.php?valor1=' + valorSeleccionado)
-                .then(response => response.text())
-                .then(data => {
-                    $('#s12').html(data);
-                })
-                .catch(error => {
-                    console.error('Error al cargar las opciones:', error);
-                });
-            }
-
-            // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
-        $('button[type="reset"]').on('click', function() {
-            select2Instance.val(null).trigger('change');
-        });
-
-        // Reiniciar Select2 cuando se cierra el modal
-        $('#exampleModal').on('hidden.bs.modal', function() {
-            select2Instance.val(null).trigger('change');
-        });
-    });
-</script>
-<script>
-  $(document).ready(function() {
-        // Inicializar Select2
-        var select2Instance = $('#s12').select2({
+        var select2Instance3 = $('#s12').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             placeholder: $(this).data('placeholder')
         });
+        $('#s12').prop('disabled', true); 
 
-        // Manejar el cambio de valor en Select2
+        // Manejar el cambio de valor en Select2 para s12
         $('#s12').on('change', function() {
             var valorSeleccionado = $(this).val();
         });
 
-            // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
+        // Cargar las opciones del segundo select basado en el valor seleccionado
+        function cargarSegundoSelect(valorSeleccionado, selectId) {
+            var url = '';
+            if (selectId === '#s11') {
+            url = 'llenarExp.php?id_tipo_expediente=' + valorSeleccionado;
+            } else if (selectId === '#s12') {
+            url = 'llenarExp2.php?valor1=' + valorSeleccionado;
+            }
+
+            fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                $(selectId).html(data);
+            })
+            .catch(error => {
+                console.error('Error al cargar las opciones:', error);
+            });
+        }
+
+        // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
         $('button[type="reset"]').on('click', function() {
-            select2Instance.val(null).trigger('change');
+            select2Instance1.val(null).trigger('change');
+            select2Instance2.val(null).trigger('change');
+            select2Instance3.val(null).trigger('change');
+            $('#s11').prop('disabled', true); 
+            $('#s12').prop('disabled', true); 
         });
 
         // Reiniciar Select2 cuando se cierra el modal
         $('#exampleModal').on('hidden.bs.modal', function() {
-            select2Instance.val(null).trigger('change');
+            select2Instance1.val(null).trigger('change');
+            select2Instance2.val(null).trigger('change');
+            select2Instance3.val(null).trigger('change');
+            $('#s11').prop('disabled', true); 
+            $('#s12').prop('disabled', true);
         });
     });
 </script>
@@ -1225,13 +1091,10 @@ require_once 'funcionesSql.php';
     enableTime: true,
     noCalendar: true,
     dateFormat: "H:i",
-    time_24hr: true
+    time_24hr: true,
     });
     
 </script>
-
-
-
 </body>
 
 </html>

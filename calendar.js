@@ -11,6 +11,7 @@ async function obtenerEventos() {
   return eventos;
 }
 
+const fechaActual = new Date(); 
 let calendarEl = document.getElementById('calendar');
 let modal = document.getElementById('exampleModal');
 let fechaEventoInput = document.getElementById('d1');
