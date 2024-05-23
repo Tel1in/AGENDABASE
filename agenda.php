@@ -22,6 +22,8 @@ require_once 'funcionesSql.php';
     
 
 
+<script src="funciones.js"></script>
+<script src="salas.js"></script>
 <!--LLAMADA A INSERTAR DATOS-->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -272,6 +274,7 @@ require_once 'funcionesSql.php';
 
 <!--CAMBIO DE BOOTNES MODAL-->
 <script>
+    
     document.addEventListener('DOMContentLoaded', function () {
             var modificarBtn1 = document.getElementById("modificarBtn2");
             var modalFooter1 = document.querySelector("#exampleModal3 .modal-footer");
@@ -986,8 +989,7 @@ require_once 'funcionesSql.php';
     }
 </script>
 <script src="dist/bundle.js"></script>
-<script src="funciones.js"></script>
-<script src="salas.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -1040,7 +1042,8 @@ require_once 'funcionesSql.php';
             if (selectId === '#s11') {
             url = 'llenarExp.php?id_tipo_expediente=' + valorSeleccionado;
             } else if (selectId === '#s12') {
-            url = 'llenarExp2.php?valor1=' + valorSeleccionado;
+            var idTipoExpediente = $('#s1').val();
+            url = 'llenarExp2.php?id=' + valorSeleccionado + '&id_tipo_expediente=' + idTipoExpediente;
             }
 
             fetch(url)

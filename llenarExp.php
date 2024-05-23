@@ -8,7 +8,7 @@ if (isset($_GET['id_tipo_expediente'])) {
     echo "<option value='' selected disabled>Seleccione</option>";
 
     foreach ($exp2 as $exp) {
-        echo "<option value='" . $exp['valor1'] . "'>" . $exp['valor2'] . "</option>";
+        echo "<option value='" . $exp['id'] . "'>" . $exp['valor'] . "</option>";
     }
 } else {
     echo "Error: No se proporcionó el tipo de expediente.";

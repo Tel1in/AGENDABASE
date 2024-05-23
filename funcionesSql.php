@@ -108,54 +108,61 @@ require_once 'conexion.php';
     function expediente2($id_tipo_expediente) {
         $conn = conexion();
         $sql = "";
-    
         switch ($id_tipo_expediente) {
             case 1:
+                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP%'";
+                break;
             case 12:
+                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CENNA%'";
+                break;
             case 13:
-                $sql = "SELECT id_asunto as valor1, numero_asunto AS valor2 FROM asunto_penal";
+                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CEJA%'";
                 break;
             case 2:
             case 17:
             case 19:
+            case 16:
             case 5:
             case 4:
-            case 25: 
-                $sql = "SELECT id_cuadernillo_constancia as valor1 ,numero_cuadernillo AS valor2 FROM cuadernilloS_constancia";
+            case 25:
+                $sql = "SELECT id_cuadernillo_constancia as id, numero_cuadernillo AS valor FROM cuadernilloS_constancia";
                 break;
             case 23:
-                $sql = "SELECT id_causa as valor1, num_causa AS valor2 FROM causa";
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa";
                 break;
             case 8:
-                $sql = "SELECT id_causa as valor1, num_causa AS valor2 FROM causa WHERE tipo_causa=1";
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=1";
                 break;
             case 10:
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=2 AND num_causa LIKE 'CEJA%'";
+                break;
             case 11:
-                $sql = "SELECT id_causa as valor1, num_causa AS valor2 FROM causa WHERE tipo_causa=2";
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=2 AND num_causa LIKE 'A-SPA%'";
                 break;
             case 9:
-                $sql = "SELECT id_causa as valor1, num_causa AS valor2 FROM causa WHERE tipo_causa=3";
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=3";
                 break;
             case 14:
             case 15:
-                $sql = "SELECT id_ejecucion as valor1, num_ejecucion AS valor2 FROM ejecucion";
-                break;   
+                $sql = "SELECT id_ejecucion as id, num_ejecucion AS valor FROM ejecucion";
+                break;
             default:
                 echo "Error: Tipo de expediente no reconocido para nom_expediente = $id_tipo_expediente.";
                 break;
         }
     
-        
         $exp2 = array();
     
         if (!empty($sql)) {
             $result = $conn->query($sql);
-    
             if (!$result) {
                 echo "Error en la consulta SQL: " . $conn->error;
             } else {
                 while ($row = $result->fetch_assoc()) {
-                    $exp2[] = $row;
+                    $exp2[] = array(
+                        'id' => $row['id'],
+                        'valor' => $row['valor']
+                    );
                 }
             }
         } else {
@@ -163,36 +170,44 @@ require_once 'conexion.php';
         }
     
         $conn->close();
-    
         return $exp2;
     }
     
-    function expediente3($id) {
+    function expediente3($id, $id_tipo_expediente) {
         $conn = conexion();
         $sql = "";
         $exp3 = array();
-
-
-        $checkCausa = "SELECT COUNT(*) FROM involucrado WHERE causa_id = '$id'";
-        $resultCausa = $conn->query($checkCausa);
-        if ($resultCausa && $resultCausa->fetch_row()[0] > 0) {
-            $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE causa_id = '$id'";
-        } else {
-            $checkAsunto = "SELECT COUNT(*) FROM asunto_penal WHERE id_asunto = '$id'";
-            $resultAsunto = $conn->query($checkAsunto);
-            if ($resultAsunto && $resultAsunto->fetch_row()[0] > 0) {
+    
+        switch ($id_tipo_expediente) {
+            case 1:
+            case 12:
+            case 13:
                 $sql = "SELECT id_asunto AS idinvolucrado, procesado AS nombreInputado FROM asunto_penal WHERE id_asunto='$id'";
-            } else {
-                $checkCC = "SELECT COUNT(*) FROM involucrado WHERE id_cc = '$id'";
-                $resultCC = $conn->query($checkCC);
-                if ($resultCC && $resultCC->fetch_row()[0] > 0) {
-                    $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE id_cc = '$id'";
-                } else {
-                        $exp3[] = array('idinvolucrado' => 0, 'nombreInputado' => 'Sin inputado');
-                }
-            }
+                break;
+            case 2:
+            case 17:
+            case 19:
+            case 5:
+            case 4:
+            case 25:
+                $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE id_cc = '$id'";
+                break;
+            case 23:
+            case 8:
+            case 10:
+            case 11:
+            case 9:
+                $sql = "SELECT id_inv AS idinvolucrado, CONCAT(nombre_inv,' ',paterno_inv,' ',materno_inv) AS nombreInputado FROM involucrado WHERE causa_id = '$id'";
+                break;
+            case 14:
+            case 15:
+                // Agregar la lógica correspondiente para el caso de ejecución si es necesario
+                break;
+            default:
+                echo "Error: Tipo de expediente no reconocido para expediente3.";
+                break;
         }
-
+    
         if (!empty($sql)) {
             $result = $conn->query($sql);
             if (!$result) {
@@ -205,11 +220,10 @@ require_once 'conexion.php';
         } else {
             echo "Error: La consulta SQL esta vacia.";
         }
-
+    
         $conn->close();
         return $exp3;
     }
-    
     
     
     function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento)

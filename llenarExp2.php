@@ -1,17 +1,15 @@
 <?php
 require_once 'funcionesSql.php';
 
-if (isset($_GET['valor1'])) {
-    $id = $_GET['valor1']; // Obtén el valor seleccionado del segundo select
-    $exp3 = expediente3($id);
-
+if (isset($_GET['id']) && isset($_GET['id_tipo_expediente'])) {
+    $id = $_GET['id'];
+    $id_tipo_expediente = $_GET['id_tipo_expediente'];
+    $exp3 = expediente3($id, $id_tipo_expediente);
     echo "<option value='' selected disabled>Seleccione</option>";
-
-    // Llena el tercer select con los datos obtenidos en expediente3
     foreach ($exp3 as $exp) {
         echo "<option value='" . $exp['idinvolucrado'] . "'>" . $exp['nombreInputado'] . "</option>";
     }
 } else {
-    echo "Error: No se proporcionó el valor del segundo select.";
+    echo "Error: No se proporcionó el ID o el tipo de expediente.";
 }
 ?>
