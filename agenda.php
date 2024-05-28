@@ -1,5 +1,5 @@
 <?php
-require_once 'funcionesSql.php';
+require_once 'sesion.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +23,6 @@ require_once 'funcionesSql.php';
 
 
 <script src="funciones.js"></script>
-<script src="salas.js"></script>
 <!--LLAMADA A INSERTAR DATOS-->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -418,121 +417,17 @@ require_once 'funcionesSql.php';
                             </div>
                         </div>
                     </div>
-                    <div class="container">
+    
+                    <div class="container" id="salasContenedor">
                         <div class="text-center">
                             <div class="spinner-border" role="status" id="spinner">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        <div class="navbar initial-hidden" id="n0">
-                            <div class="container">
-                                <P>SALAS TEPIC</P>
-                                <H5>S1</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>S2</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                                <H5>S3</H5>
-                                <i class="bi bi-circle-fill" style="color: blue;"></i>
-                                <H5>S4</H5>
-                                <i class="bi bi-circle-fill" style="color: green;"></i>
-                                <H5>S5</H5>
-                                <i class="bi bi-circle-fill" style="color:pink;"></i>
-                                <H5>SV 1</H5>
-                                <i class="bi bi-circle-fill" style="color:blueviolet;"></i>
-                                <H5>SV 2</H5>
-                                <i class="bi bi-circle-fill" style="color:deepskyblue;"></i>
-                                <H5>SV 3</H5>
-                                <i class="bi bi-circle-fill" style="color:gray;"></i>
-                                <H5>SV 4</H5>
-                                <i class="bi bi-circle-fill" style="color:purple;"></i>
-                                <H5>SV 16</H5>
-                                <i class="bi bi-circle-fill" style="color:aquamarine;"></i>
-                                <H5>SV 17</H5>
-                                <i class="bi bi-circle-fill" style="color:chartreuse;"></i>
-                                <H5>SV 18</H5>
-                                <i class="bi bi-circle-fill" style="color:darkblue;"></i>
-                                <H5>SV 19</H5>
-                                <i class="bi bi-circle-fill" style="color:darkcyan;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n1">
-                            <div class="container">
-                                <p>SALAS ADOLECENTES</p>
-                                <H5>SALA ADOLECENTES</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SALAV 5 ADOLECENTES</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                                <H5>SALAV 15 ADOLECENTES</H5>
-                                <i class="bi bi-circle-fill" style="color: blue;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n2">
-                            <div class="container">
-                                <P>SALAS BAHIA</P>
-                                <H5>S1 BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>S2 BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                                <H5>S10 BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: blue;"></i>
-                                <H5>SV11 BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: green;"></i>
-                                <H5>SV CJM BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: coral;"></i>
-                                <H5>SV14 CJM BAHIA</H5>
-                                <i class="bi bi-circle-fill" style="color: cyan;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n3">
-                            <div class="container">
-                                <P>SALAS CJM</P>
-                                <H5>SALA DE MUJER TEPIC</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SV13 CJM TEPIC</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                                <H5>SALA EJECUCION</H5>
-                                <i class="bi bi-circle-fill" style="color: blue;"></i>
-                                <H5>SV20 CJM TEPIC</H5>
-                                <i class="bi bi-circle-fill" style="color: green;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n4">
-                            <div class="container">
-                                <P>SALAS SANTIAGO</P>
-                                <H5>SV6 SANTIAGO</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SV12 SANITAGO</H5>
-                                <i class="bi bi-circle-fill" style="color: blue;"></i>
-                                <H5>SALA SANTIAGO</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n5">
-                            <div class="container">
-                                <P>SALAS IXTLAN</P>
-                                <H5>SALA VIRTUAL 8 IXTLAN</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SALA IXTLAN</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n6">
-                            <div class="container">
-                                <P>SALAS TECUALA</P>
-                                <H5>SALA VIRTUAL 7 TECUALA</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SALA TECUALA</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                            </div>
-                        </div>
-                        <div class="navbar initial-hidden" id="n7">
-                            <div class="container">
-                                <P>SALAS SAN PEDRO</P>
-                                <H5>SALA VIRTUAL 8 SAN PEDRO</H5>
-                                <i class="bi bi-circle-fill" style="color: yellow;"></i>
-                                <H5>SALA SAN PEDRO</H5>
-                                <i class="bi bi-circle-fill" style="color: red;"></i>
-                            </div>
+                        <div id="content" style="display: none;">
+                            <?php
+                                    require_once 'salas.php'
+                            ?>
                         </div>
                     </div>
                     <div class="container">
@@ -549,7 +444,7 @@ require_once 'funcionesSql.php';
                             </thead>
                             <tbody id="tablaEventosBody" style="style=display: none;">
                                     <?php
-                                      require_once 'eventosAgenda.php'; 
+                                    require_once 'eventosAgenda.php'; 
                                     ?>
 
                             </tbody>
@@ -606,7 +501,7 @@ require_once 'funcionesSql.php';
                                             </tr>
                                                 <?php } else { ?>
                                                     <tr>
-                                                        <td colspan="5" class="text-center">No se encontraron resultados</td>
+                                                        <td colspan="12" class="text-center">No se encontraron resultados</td>
                                                     </tr>
                                                 <?php } ?>
                         </TBody>
@@ -1098,6 +993,14 @@ require_once 'funcionesSql.php';
     });
     
 </script>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('spinner').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }, 2000);
+        });
+    </script>
 </body>
 
 </html>

@@ -248,7 +248,7 @@ require_once 'conexion.php';
                 $response = "Error en la inserción del evento: " . $conn->error;
                 echo $response;
             }
-       
+    
         $conn->close();
     }
     
@@ -332,7 +332,7 @@ require_once 'conexion.php';
         return $evento;
     }
 
-  
+
     
     function obtenerDatos3($hora, $sala, $fecha) {
         $conn = conexion();  
@@ -378,7 +378,7 @@ require_once 'conexion.php';
     
 
 
-     function eliminarDatos($id_evento_agenda){
+    function eliminarDatos($id_evento_agenda){
         $conn = conexion();
         $sql = "DELETE FROM eventoagenda WHERE id_evento_agenda = '$id_evento_agenda'";
         $response = "";
@@ -395,7 +395,7 @@ require_once 'conexion.php';
     }
     
     
-     function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento){
+    function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento){
         $conn = conexion();
         $sql = "UPDATE eventoagenda
                 SET  tipoAudiencia = '$tipoAud', sala = '$sala' , juez = '$juez', solicitante ='$solicitante' , fecha = '$fecha' , hora = '$hora' , evento = '$evento'
@@ -411,8 +411,23 @@ require_once 'conexion.php';
         $conn->close();
     
         return $response;
-     }
+    }
     
-
+    function obtenerRegionUsuario($usuario) {
+        $conn = conexion(); 
+    
+        $sql = "SELECT region FROM relacionado WHERE usuario = '$usuario'";
+        $result = $conn->query($sql);
+    
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $region = $row["region"];
+        } else {
+            $region = "";
+            echo "No se encontró el usuario en la tabla.";
+        }
+    
+        return $region;
+    }
 
     
