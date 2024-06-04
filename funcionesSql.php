@@ -4,7 +4,26 @@ require_once 'conexion.php';
     
     function expediente(){
         $conn = conexion();
-        $sql = "SELECT id_tipo_expediente,nom_expediente from cat_tipo_expediente where agenda='Si'";
+        require_once 'sesion.php';
+        $usuario = $_SESSION['usuario'];
+        $usuarioSala = obtenerRegionYJuzgadoUsuario($usuario);
+        $juzgado = $usuarioSala["juzgado"];
+        $sql = "SELECT c.id_tipo_expediente,c.nom_expediente 
+        from cat_tipo_expediente c
+        where c.agenda='Si'";
+
+        if ($juzgado == "ADOL") {
+            $sql .= " AND c.id_tipo_expediente IN (9, 10, 11, 15, 12, 13)";
+        } else if ($juzgado != "") {
+            $sql .= " AND EXISTS (
+                SELECT 1
+                FROM relacionado u
+                WHERE u.juzgado = '$juzgado'
+                AND u.usuario = '$usuario'
+            )
+            AND c.id_tipo_expediente NOT IN (9, 10, 11, 15, 12, 13)";
+        }
+            
         $result = $conn->query($sql );
     
         $exp = array();
@@ -45,10 +64,48 @@ require_once 'conexion.php';
     
     function sala() {
         $conn = conexion();
-        
-        $sql = "SELECT id_sala,nombre_sala FROM sala";
-        $result = $conn->query($sql);
+        require_once 'sesion.php';
+        $usuario = $_SESSION['usuario'];
+        $usuarioSala = obtenerRegionYJuzgadoUsuario($usuario);
+        $region = $usuarioSala["region"];
+        $juzgado = $usuarioSala["juzgado"];
     
+        $sql = "SELECT DISTINCT s.id_sala, s.nombre_sala
+                FROM sala s
+                JOIN relacionado r ON s.region = r.region
+                WHERE r.region = '$region' AND r.juzgado = '$juzgado'";
+    
+        $filtroJuzgado = "";
+        switch ($juzgado) {
+            case "CRJP":
+                $filtroJuzgado = " AND s.id_sala IN (1, 2, 3, 6, 12, 13, 19, 20, 21, 22, 36, 37, 38, 39, 42, 43)";
+                break;
+            case "ADOL":
+                $filtroJuzgado = " AND s.id_sala IN (4, 14, 23, 35)";
+                break;
+            case "CJM":
+                $filtroJuzgado = " AND s.id_sala IN (5, 18, 33, 40, 41)";
+                break;
+            case "SGO":
+                $filtroJuzgado = " AND s.id_sala IN (7, 31, 32)";
+                break;
+            case "TEC":
+                $filtroJuzgado = " AND s.id_sala IN (8, 25)";
+                break;
+            case "SP":
+                $filtroJuzgado = " AND s.id_sala IN (9, 27, 10)";
+                break;
+            case "BAHIA":
+                $filtroJuzgado = " AND s.id_sala IN (11, 16, 15, 29, 30, 34)";
+                break;
+            case "IXTLAN":
+                $filtroJuzgado = " AND s.id_sala IN (17, 26)";
+                break;
+        }
+    
+        $sql .= $filtroJuzgado . " ORDER BY s.id_sala ASC";
+    
+        $result = $conn->query($sql);
         $salas = array();
     
         if ($result) {
@@ -60,8 +117,8 @@ require_once 'conexion.php';
         }
     
         $conn->close();
-    
         return $salas;
+        session_destroy();
     }
     
     function juez() {
@@ -107,50 +164,31 @@ require_once 'conexion.php';
     
     function expediente2($id_tipo_expediente) {
         $conn = conexion();
+        require_once 'sesion.php';
+        $usuario = $_SESSION['usuario'];
+        $regionExp2 = obtenerRegionYJuzgadoUsuario($usuario);
+        $region = $regionExp2["region"];
         $sql = "";
-        switch ($id_tipo_expediente) {
-            case 1:
-                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP%'";
-                break;
-            case 12:
-                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CENNA%'";
-                break;
-            case 13:
-                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CEJA%'";
-                break;
-            case 2:
-            case 17:
-            case 19:
-            case 16:
-            case 5:
-            case 4:
-            case 25:
-                $sql = "SELECT id_cuadernillo_constancia as id, numero_cuadernillo AS valor FROM cuadernilloS_constancia";
-                break;
-            case 23:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa";
-                break;
-            case 8:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=1";
-                break;
-            case 10:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=2 AND num_causa LIKE 'CEJA%'";
-                break;
-            case 11:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=2 AND num_causa LIKE 'A-SPA%'";
-                break;
-            case 9:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=3";
-                break;
-            case 14:
-            case 15:
-                $sql = "SELECT id_ejecucion as id, num_ejecucion AS valor FROM ejecucion";
-                break;
-            default:
-                echo "Error: Tipo de expediente no reconocido para nom_expediente = $id_tipo_expediente.";
-                break;
+
+        if($region=="TEPIC"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
+
+        } else if($region=="BAHIA"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
+
+        } else if($region=="TECUALA"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
+
+        } else if($region=="SANPEDRO"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
+
+        } else if($region=="IXTLAN"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
+
+        } else if($region=="SANTIAGO"){
+            $sql = obtenerConsultaSegunTipoExpediente($id_tipo_expediente);
         }
-    
+
         $exp2 = array();
     
         if (!empty($sql)) {
@@ -171,6 +209,69 @@ require_once 'conexion.php';
     
         $conn->close();
         return $exp2;
+        session_destroy();
+    }
+    
+    function obtenerConsultaSegunTipoExpediente($id_tipo_expediente) {
+        $sql = "";
+        require_once 'sesion.php';
+        $usuario = $_SESSION['usuario'];
+        $regionExp2 = obtenerRegionYJuzgadoUsuario($usuario);
+        $region = $regionExp2["region"];
+        switch ($id_tipo_expediente) {
+            case 1:
+                $sql = "SELECT a.id_asunto  as id, a.numero_asunto AS valor 
+                        FROM asunto_penal a 
+                        INNER JOIN relacionado r
+                        ON a.region = r.region
+                        WHERE r.region = '$region' AND a.numero_asunto LIKE 'AP%'
+                        GROUP BY id";
+                break;
+            case 12:
+                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CENNA%'";
+                break;
+            case 13:
+                $sql = "SELECT id_asunto as id, numero_asunto AS valor FROM asunto_penal WHERE numero_asunto LIKE 'AP-CEJA%'";
+                break;
+            case 17:
+            case 19:
+            case 16:
+            case 5:
+            case 4:
+            case 25:
+                $sql = "SELECT id_cuadernillo_constancia as id, numero_cuadernillo AS valor 
+                        FROM cuadernilloS_constancia c
+                        INNER JOIN relacionado r
+                        ON c.region = r.region
+                        WHERE r.region = '$region'
+                        GROUP BY id";
+                break;
+            case 23:
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa";
+                break;
+            case 8:
+                $sql = "SELECT c.id_causa as id, c.num_causa AS valor 
+                        FROM causa c
+                        INNER JOIN relacionado r
+                        ON c.region = r.region
+                        WHERE tipo_causa=1 AND r.region = '$region'
+                        GROUP BY id";
+                break;
+            case 10:
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=2";
+                break;
+            case 9:
+                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=3";
+                break;
+            case 14:
+            case 15:
+                $sql = "SELECT id_ejecucion as id, num_ejecucion AS valor FROM ejecucion";
+                break;
+            default:
+                echo "Error: Tipo de expediente no reconocido para nom_expediente = $id_tipo_expediente.";
+                break;
+        }
+        return $sql;
     }
     
     function expediente3($id, $id_tipo_expediente) {
@@ -226,8 +327,7 @@ require_once 'conexion.php';
     }
     
     
-    function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento)
-    {
+    function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento) {
         $conn = conexion();
 
             $sql_check = "SELECT COUNT(*) FROM eventoAgenda WHERE fecha = '$fecha' AND hora = '$hora'";
@@ -332,8 +432,6 @@ require_once 'conexion.php';
         return $evento;
     }
 
-
-    
     function obtenerDatos3($hora, $sala, $fecha) {
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
@@ -376,8 +474,6 @@ require_once 'conexion.php';
         return $eventos;
     }
     
-
-
     function eliminarDatos($id_evento_agenda){
         $conn = conexion();
         $sql = "DELETE FROM eventoagenda WHERE id_evento_agenda = '$id_evento_agenda'";
@@ -393,7 +489,6 @@ require_once 'conexion.php';
     
         return $response;
     }
-    
     
     function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento){
         $conn = conexion();
@@ -414,20 +509,37 @@ require_once 'conexion.php';
     }
     
     function obtenerRegionUsuario($usuario) {
-        $conn = conexion(); 
-    
-        $sql = "SELECT region FROM relacionado WHERE usuario = '$usuario'";
+        $conn = conexion();
+        $sql = "SELECT region, juzgado FROM relacionado WHERE usuario = '$usuario'";
         $result = $conn->query($sql);
     
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $region = $row["region"];
+            $juzgado = $row["juzgado"];
+            return $region . " " . $juzgado;
         } else {
-            $region = "";
             echo "No se encontró el usuario en la tabla.";
+            return "";
         }
-    
-        return $region;
     }
 
+    function obtenerRegionYJuzgadoUsuario($usuario) { 
+        $conn = conexion(); 
+        $sql = "SELECT region, juzgado FROM relacionado WHERE usuario = '$usuario'"; 
+        $result = $conn->query($sql); 
     
+        if ($result->num_rows > 0) { 
+            $row = $result->fetch_assoc();
+            $region = $row["region"];
+            $juzgado = $row["juzgado"];
+        } else { 
+            $region = ""; 
+            $juzgado = ""; 
+            echo "No se encontró el usuario en la tabla."; 
+        } 
+    
+        $conn->close();
+    
+        return array("region" => $region, "juzgado" => $juzgado); 
+    }

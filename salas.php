@@ -5,28 +5,28 @@ include 'sesion.php';
 function obtenerHTMLSalas($usuario, $region) {
     $salasHTML = '';
     switch ($region) {
-        case "TEPIC":
+        case "TEPIC CRJP":
             $salasHTML = generarHTMLSalasTepic();
             break;
-        case "ADOLECENTES":
+        case "TEPIC ADOL":
             $salasHTML = generarHTMLSalasAdolecentes();
             break;
-        case "BAHIA":
+        case "BAHIA BAHIA":
             $salasHTML = generarHTMLSalasBahia();
             break;
-        case "cjm":
+        case "TEPIC CJM":
             $salasHTML = generarHTMLSalasCJM();
             break;
-        case "SANTIAGO":
+        case "SANTIAGO SGO":
             $salasHTML = generarHTMLSalasSantiago();
             break;
-        case "IXTLAN":
+        case "IXTLAN IXTLAN":
             $salasHTML = generarHTMLSalasIxtlan();
             break;
-        case "TECUALA":
+        case "TECUALA TEC":
             $salasHTML = generarHTMLSalasTecuala();
             break;
-        case "SANPEDRO":
+        case "SANPEDRO SP":
             $salasHTML = generarHTMLSalasSanPedro();
             break;
         default:
@@ -65,6 +65,12 @@ function generarHTMLSalasTepic() {
                     <i class="bi bi-circle-fill" style="color:darkblue;"></i>
                     <H5>SV 19</H5>
                     <i class="bi bi-circle-fill" style="color:darkcyan;"></i>
+                    <H5>SV 22</H5>
+                    <i class="bi bi-circle-fill" style="color:fuchsia;"></i>
+                    <H5>SV 23</H5>
+                    <i class="bi bi-circle-fill" style="color:goldenrod;"></i>
+                    <H5>SALA MOVIL</H5>
+                    <i class="bi bi-circle-fill" style="color:firebrick;"></i>
                 </div>               
             </div>';
     return $html;
@@ -81,6 +87,8 @@ function generarHTMLSalasAdolecentes() {
                     <i class="bi bi-circle-fill" style="color: red;"></i>
                     <H5>SALAV 15 ADOLECENTES</H5>
                     <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <H5>SALA UAN</H5>
+                    <i class="bi bi-circle-fill" style="color: blueviolet;"></i>
                 </div>
             </div>';
     return $html;
@@ -100,9 +108,9 @@ function generarHTMLSalasBahia() {
                     <H5>SV11 BAHIA</H5>
                     <i class="bi bi-circle-fill" style="color: green;"></i>
                     <H5>SV CJM BAHIA</H5>
-                    <i class="bi bi-circle-fill" style="color: coral;"></i>
+                    <i class="bi bi-circle-fill" style="color: pink;"></i>
                     <H5>SV14 CJM BAHIA</H5>
-                    <i class="bi bi-circle-fill" style="color: cyan;"></i>
+                    <i class="bi bi-circle-fill" style="color: blueviolet;"></i>
                 </div>
             </div>';
     return $html;
@@ -178,6 +186,8 @@ function generarHTMLSalasSanPedro() {
                     <i class="bi bi-circle-fill" style="color: yellow;"></i>
                     <H5>SALA SAN PEDRO</H5>
                     <i class="bi bi-circle-fill" style="color: red;"></i>
+                    <H5>SALA MOVIL SP</H5>
+                    <i class="bi bi-circle-fill" style="color: blue;"></i>
                 </div>
             </div>';
     return $html;
@@ -185,8 +195,8 @@ function generarHTMLSalasSanPedro() {
 
 function generarSala(){
     $usuario = $_SESSION['usuario'];
-    $region = obtenerRegionUsuario($usuario);
-    $salasHTML = obtenerHTMLSalas($usuario, $region);
+    $regionJuzgado = obtenerRegionUsuario($usuario);
+    $salasHTML = obtenerHTMLSalas($usuario, $regionJuzgado);
     echo $salasHTML;
 }
 

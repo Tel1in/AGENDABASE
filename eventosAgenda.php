@@ -17,19 +17,22 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
 
     foreach ($horas_fijas as $hora) {
         // Obtener los eventos para esta hora
-        $eventosAmarillo = obtenerDatos3($hora, [1, 14, 5, 31, 26, 25, 27], $fechaCookie);
-        $eventosRojo = obtenerDatos3($hora, [2, 23, 33, 32, 7, 17, 8, 9], $fechaCookie);
-        $eventosAzul = obtenerDatos3($hora, [3, 35, 18], $fechaCookie);
-        $eventosVerde = obtenerDatos3($hora, [12, 40, 11], $fechaCookie);
-        $eventosRosa = obtenerDatos3($hora, [13, 6], $fechaCookie);
-        $eventosAV = obtenerDatos3($hora, [19, 4], $fechaCookie);
+        $eventosAmarillo = obtenerDatos3($hora, [1, 14, 5, 31, 26, 25, 27, 11], $fechaCookie);
+        $eventosRojo = obtenerDatos3($hora, [2, 23, 33, 32, 7, 17, 8, 9, 15], $fechaCookie);
+        $eventosAzul = obtenerDatos3($hora, [3, 35, 18, 10, 29], $fechaCookie);
+        $eventosVerde = obtenerDatos3($hora, [12, 40, 30], $fechaCookie);
+        $eventosRosa = obtenerDatos3($hora, [13,16], $fechaCookie);
+        $eventosAV = obtenerDatos3($hora, [19, 4, 34], $fechaCookie);
         $eventosAC = obtenerDatos3($hora, [20], $fechaCookie);
         $eventosMorado = obtenerDatos3($hora, [22], $fechaCookie);
         $eventosGris = obtenerDatos3($hora, [21], $fechaCookie);
-        $eventosAM = obtenerDatos3($hora, [23],  $fechaCookie);
+        $eventosAM = obtenerDatos3($hora, [23,36],  $fechaCookie);
         $eventosCT = obtenerDatos3($hora, [37],  $fechaCookie);
         $eventosAO = obtenerDatos3($hora, [38],  $fechaCookie);
         $eventosVO = obtenerDatos3($hora, [39],  $fechaCookie);
+        $eventosV1 = obtenerDatos3($hora, [6],  $fechaCookie);
+        $eventosV2 = obtenerDatos3($hora, [42],  $fechaCookie);
+        $eventosV3 = obtenerDatos3($hora, [43],  $fechaCookie);
 
         // Imprimir la fila de la tabla para esta hora
         echo "<tr>";
@@ -37,7 +40,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
         echo "<td>";
 
         // Verificar si hay eventos para esta hora
-        $eventos = array_merge($eventosAmarillo, $eventosRojo, $eventosAzul, $eventosVerde, $eventosRosa, $eventosAV, $eventosAC, $eventosMorado, $eventosGris, $eventosAM, $eventosCT, $eventosAO, $eventosVO);
+        $eventos = array_merge($eventosAmarillo, $eventosRojo, $eventosAzul, $eventosVerde, $eventosRosa, $eventosAV, $eventosAC, $eventosMorado, $eventosGris, $eventosAM, $eventosCT, $eventosAO, $eventosVO,  $eventosV1,  $eventosV2,  $eventosV3);
         if (!empty($eventos)) {
             // Mostrar las divisiones con eventos y colores de fondo dentro del td
             echo '<div class="container">';
@@ -71,6 +74,12 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
                     $color = 'darkblue';
                 } else if (in_array($evento, $eventosVO)) {
                     $color = 'darkcyan';
+                } else if (in_array($evento, $eventosV1)) {
+                    $color = 'firebrick';
+                } else if (in_array($evento, $eventosV2)) {
+                    $color = 'fuchsia';
+                } else if (in_array($evento, $eventosV3)) {
+                    $color = 'goldenrod';
                 }
                 echo '<div class="col" onclick="abrirModal(' . $evento['id_evento_agenda'] . ')" style="border: 1px solid black; background-color: ' . $color . ' ;"><h6>' . $evento['eventoFN'] . '</h6></div>';
 
