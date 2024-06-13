@@ -10,8 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $solicitante = $_POST['sol11'];
         $fecha = $_POST['d10'];
         $hora = $_POST['h10'];
-        $evento = $_POST['evento1'];
-        modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento);
+        modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora);
     } 
 
     else if (isset($_POST['modal']) && $_POST['modal'] == '2') {
@@ -22,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $solicitante = $_POST['sol111'];
         $fecha = $_POST['d100'];
         $hora = $_POST['h100']; 
-        $evento = $_POST['evento10']; 
-        modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento);
+        modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora);
     }
 }

@@ -40,13 +40,13 @@ function generarHTMLSalasTepic() {
                 <div class="container">
                     <P>SALAS TEPIC</P>
                     <H5>S1</H5>
-                    <i class="bi bi-circle-fill" style="color: yellow;"></i>
+                    <i class="bi bi-circle-fill" style="color:yellow;"></i>
                     <H5>S2</H5>
-                    <i class="bi bi-circle-fill" style="color: red;"></i>
+                    <i class="bi bi-circle-fill" style="color:red;"></i>
                     <H5>S3</H5>
-                    <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <i class="bi bi-circle-fill" style="color:lightskyblue;"></i>
                     <H5>S4</H5>
-                    <i class="bi bi-circle-fill" style="color: green;"></i>
+                    <i class="bi bi-circle-fill" style="color:greenyellow;"></i>
                     <H5>S5</H5>
                     <i class="bi bi-circle-fill" style="color:pink;"></i>
                     <H5>SV 1</H5>
@@ -62,9 +62,9 @@ function generarHTMLSalasTepic() {
                     <H5>SV 17</H5>
                     <i class="bi bi-circle-fill" style="color:chartreuse;"></i>
                     <H5>SV 18</H5>
-                    <i class="bi bi-circle-fill" style="color:darkblue;"></i>
+                    <i class="bi bi-circle-fill" style="color:royalblue;"></i>
                     <H5>SV 19</H5>
-                    <i class="bi bi-circle-fill" style="color:darkcyan;"></i>
+                    <i class="bi bi-circle-fill" style="color:lightseagreen	;"></i>
                     <H5>SV 22</H5>
                     <i class="bi bi-circle-fill" style="color:fuchsia;"></i>
                     <H5>SV 23</H5>
@@ -86,7 +86,7 @@ function generarHTMLSalasAdolecentes() {
                     <H5>SALAV 5 ADOLECENTES</H5>
                     <i class="bi bi-circle-fill" style="color: red;"></i>
                     <H5>SALAV 15 ADOLECENTES</H5>
-                    <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <i class="bi bi-circle-fill" style="color: lightskyblue;"></i>
                     <H5>SALA UAN</H5>
                     <i class="bi bi-circle-fill" style="color: blueviolet;"></i>
                 </div>
@@ -104,9 +104,9 @@ function generarHTMLSalasBahia() {
                     <H5>S2 BAHIA</H5>
                     <i class="bi bi-circle-fill" style="color: red;"></i>
                     <H5>S10 BAHIA</H5>
-                    <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <i class="bi bi-circle-fill" style="color: lightskyblue;"></i>
                     <H5>SV11 BAHIA</H5>
-                    <i class="bi bi-circle-fill" style="color: green;"></i>
+                    <i class="bi bi-circle-fill" style="color: greenyellow;"></i>
                     <H5>SV CJM BAHIA</H5>
                     <i class="bi bi-circle-fill" style="color: pink;"></i>
                     <H5>SV14 CJM BAHIA</H5>
@@ -126,9 +126,9 @@ function generarHTMLSalasCJM() {
                     <H5>SV13 CJM TEPIC</H5>
                     <i class="bi bi-circle-fill" style="color: red;"></i>
                     <H5>SALA EJECUCION</H5>
-                    <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <i class="bi bi-circle-fill" style="color: lightskyblue;"></i>
                     <H5>SV20 CJM TEPIC</H5>
-                    <i class="bi bi-circle-fill" style="color: green;"></i>
+                    <i class="bi bi-circle-fill" style="color: greenyellow;"></i>
                 </div>
             </div>';
     return $html;
@@ -187,7 +187,7 @@ function generarHTMLSalasSanPedro() {
                     <H5>SALA SAN PEDRO</H5>
                     <i class="bi bi-circle-fill" style="color: red;"></i>
                     <H5>SALA MOVIL SP</H5>
-                    <i class="bi bi-circle-fill" style="color: blue;"></i>
+                    <i class="bi bi-circle-fill" style="color: lightskyblue;"></i>
                 </div>
             </div>';
     return $html;

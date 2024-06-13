@@ -144,7 +144,7 @@ let calendar = new Calendar(calendarEl, {
 
             document.getElementById('d100').value = data.fecha;
             document.getElementById('h100').value = data.hora;
-            document.getElementById('evento10').value = data.evento;
+
 
             
             modal3.show();

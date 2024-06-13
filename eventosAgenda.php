@@ -53,9 +53,9 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
                 } else if (in_array($evento, $eventosRojo)) {
                     $color = 'red';
                 } else if (in_array($evento, $eventosAzul)) {
-                    $color = 'blue';
+                    $color = 'lightskyblue';
                 } else if (in_array($evento, $eventosVerde)) {
-                    $color = 'green';
+                    $color = 'greenyellow';
                 } else if (in_array($evento, $eventosRosa)) {
                     $color = 'pink';
                 } else if (in_array($evento, $eventosAV)) {
@@ -71,9 +71,9 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
                 } else if (in_array($evento, $eventosCT)) {
                     $color = 'chartreuse';
                 } else if (in_array($evento, $eventosAO)) {
-                    $color = 'darkblue';
+                    $color = 'royalblue';
                 } else if (in_array($evento, $eventosVO)) {
-                    $color = 'darkcyan';
+                    $color = 'lightseagreen';
                 } else if (in_array($evento, $eventosV1)) {
                     $color = 'firebrick';
                 } else if (in_array($evento, $eventosV2)) {

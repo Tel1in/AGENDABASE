@@ -23,19 +23,32 @@ require_once 'sesion.php';
 
 
 <script src="funciones.js"></script>
+
 <!--LLAMADA A INSERTAR DATOS-->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var form = document.querySelector("form");
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            var formData = new FormData(form);
-            fetch("insertarEvento.php", {
+    var form = document.querySelector("form");
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        var formData = new FormData(form);
+        var selectNumero = document.getElementById("s11");
+        var valorAInsertar = selectNumero.options[selectNumero.selectedIndex].getAttribute("data-valorainsertar");
+        formData.append("valorAInsertar", valorAInsertar);
+
+        var selectedOptions = $('#s12').select2('data').map(function(option) {
+            return option.id;
+        });
+        var selectedValues = selectedOptions.join(','); 
+        formData.append("s12", selectedValues);
+
+
+        fetch("insertarEvento.php", {
             method: "POST",
             body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
+        })
+        .then(response => response.text())
+        .then(data => {
             if (data.trim() === "Evento insertado correctamente.") {
                 swal("Evento Insertado con Éxito", "CONTINUAR", "success")
                 .then(() => {
@@ -44,13 +57,13 @@ require_once 'sesion.php';
             } else {
                 swal("Error", data, "error");
             }
-            })
-            .catch(error => {
+        })
+        .catch(error => {
             console.error("Error en la solicitud Fetch: " + error.message);
             swal("Error", "Hubo un error en la solicitud", "error");
             });
         });
-   });
+    });
 </script>
 
 
@@ -203,7 +216,6 @@ require_once 'sesion.php';
 
                         form.querySelector('#d10').value = data.fecha;
                         form.querySelector('#h10').value = data.hora;
-                        form.querySelector('#evento1').value = data.evento;
                     } else {
                         console.error('Error al obtener los datos del evento:', data.error);
                     }
@@ -418,43 +430,43 @@ require_once 'sesion.php';
                         </div>
                     </div>
     
-                    <div class="container" id="salasContenedor">
-                        <div class="text-center">
-                            <div class="spinner-border" role="status" id="spinner">
-                                <span class="visually-hidden">Loading...</span>
+                        <div class="container" id="salasContenedor">
+                            <div class="text-center">
+                                <div class="spinner-border" role="status" id="spinner">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div id="content" style="display: none;">
+                                <?php
+                                        require_once 'salas.php'
+                                ?>
                             </div>
                         </div>
-                        <div id="content" style="display: none;">
-                            <?php
-                                    require_once 'salas.php'
-                            ?>
-                        </div>
-                    </div>
-                    <div class="container">
-                        <div class="spinner-border text-primary position-fixed  start-50 " role="status" id="spinner2" style="display: none;">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>  
-                        <table id="example" class="table table-bordered "
-                            style="border-style:hidden; border-color: black;">
-                            <thead>
-                                <tr>
-                                    <th style="width: 120px;">Hora</th>
-                                    <th>Evento</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaEventosBody" style="style=display: none;">
-                                    <?php
-                                    require_once 'eventosAgenda.php'; 
-                                    ?>
+                        <div class="container">
+                            <div class="spinner-border text-primary position-fixed  start-50 " role="status" id="spinner2" style="display: none;">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>  
+                            <table id="example" class="table table-bordered "
+                                style="border-style:hidden; border-color: black;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 120px;">Hora</th>
+                                        <th>Evento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaEventosBody" style="style=display: none;">
+                                        <?php
+                                        require_once 'eventosAgenda.php'; 
+                                        ?>
 
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
                     <div>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Agregar Evento
-                    </button>
-                </div>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Agregar Evento
+                        </button>
+                    </div>
                 </div>
                 <div id="tabla3" class="d-none">
                     <table class="table table-striped">
@@ -470,7 +482,6 @@ require_once 'sesion.php';
                                 <th scope="col">Solicitante</th>
                                 <th scope="col">Hora</th>
                                 <th scope="col">fecha</th>
-                                <th scope="col">Evento</th>
                                 <th scope="col">Acciones</th>
                             </tr>
                         </thead>
@@ -490,7 +501,6 @@ require_once 'sesion.php';
                                                 <td><?php echo $row["fecha"]?> </td>
                                                 <?php $horaFormato12 = date("h:i A", strtotime($row["hora"]))?>
                                                 <td><?php echo $horaFormato12 ?></td>
-                                                <td><?php echo $row["evento"]?></td>
                                                         <td>                                                  
                                                             <button type='button' id='eliminarDatos' class='btn btn-outline-dark' onclick='eliminarDatos(<?php echo $row["id_evento_agenda"]; ?>)'><i class='bi bi-trash3' style='color:red'></i></button></div>          
                                                             <button type='button' id='modificarDatos' class='btn btn-outline-dark modificarDatosBtn' data-bs-toggle="modal" data-bs-target="#exampleModal2" data-id="<?php echo $row["id_evento_agenda"]; ?>">
@@ -501,7 +511,7 @@ require_once 'sesion.php';
                                             </tr>
                                                 <?php } else { ?>
                                                     <tr>
-                                                        <td colspan="12" class="text-center">No se encontraron resultados</td>
+                                                        <td colspan="11" class="text-center">No se encontraron resultados</td>
                                                     </tr>
                                                 <?php } ?>
                         </TBody>
@@ -538,7 +548,7 @@ require_once 'sesion.php';
                                             </select>
                                             <div class="form-text" id="basic-addon4">Seleccione un tipo de expediente para habilitar</div>
                                             <label for="s12">Imputado</label>
-                                            <select class="form-select" name="s12" id="s12"  required>
+                                            <select class="form-select" name="s12" id="s12" multiple  required>
                                                 <option value="" selected disabled>Seleccione</option>
                                             </select>
                                             <div class="form-text" id="basic-addon4">Seleccione un numero para habilitar</div>
@@ -548,7 +558,7 @@ require_once 'sesion.php';
                                                 <?php
                                                 $solicitante = solicitante();
                                                 foreach ($solicitante as $sol) {
-                                                    echo "<option value='" . $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                                    echo "<option value='" . $sol["idSolicitante"] . "'>" . $sol["Solicitante"] . "</option>";
                                                 }
                                                 ?>
                                             </select>
@@ -588,8 +598,6 @@ require_once 'sesion.php';
                                             <input type="date" id="d1" name="d1" class="form-control" required>
                                             <label for="h1">Hora</label>
                                             <input type="time" pattern="[0-9]{2}:[0-9]{2}" step="1" class="form-select" name="h1" id="h1" required>
-                                            <label for="evento">Nombre Evento</label>
-                                            <input id="evento" name="evento" type="text" required class="form-control">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -671,8 +679,6 @@ require_once 'sesion.php';
                                         <input type="date" id="d10" name="d10" class="form-control" readonly>
                                         <label for="h10">Hora</label>
                                         <input type="text" class="form-select"name="h10" id="h10" required readonly>
-                                        <label for="evento1">Nombre Evento</label>
-                                        <input id="evento1" name="evento1" type="text" required class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -746,7 +752,7 @@ require_once 'sesion.php';
                                             <?php
                                                 $solicitante = solicitante();
                                                 foreach ($solicitante as $sol) {
-                                                    echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["TipoSolicitante"] . "</option>";
+                                                    echo "<option value='". $sol["idSolicitante"] . "'>" . $sol["Solicitante"] . "</option>";
                                                 }
                                             ?>
                                         </select>
@@ -754,8 +760,6 @@ require_once 'sesion.php';
                                         <input type="date" id="d100" name="d100" class="form-control" readonly>
                                         <label for="h100">Hora</label>
                                         <input type="time" min="00:00" max="23:59" pattern="[0-2][0-9]:[0-5][0-9]" class="form-select" name="h100" id="h100" disabled>
-                                        <label for="evento10">Nombre Evento</label>
-                                        <input id="evento10" name="evento10" type="text" required class="form-control" readonly>
                                     </div>
                                 </div>
                                     <div class="modal-footer">
@@ -873,7 +877,6 @@ require_once 'sesion.php';
 
             document.getElementById('d100').value = data.fecha;
             document.getElementById('h100').value = data.hora;
-            document.getElementById('evento10').value = data.evento;
             
 
 
@@ -922,7 +925,8 @@ require_once 'sesion.php';
         var select2Instance3 = $('#s12').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder')
+            placeholder: "Seleccione",
+            multiple: true
         });
         $('#s12').prop('disabled', true); 
 
@@ -951,11 +955,37 @@ require_once 'sesion.php';
             });
         }
 
+        var select2Instance4 = $('#s3').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+
+        var select2Instance5 = $('#juez').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+        
+        var select2Instance6 = $('#s300').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+
+        var select2Instance7 = $('#juez10').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder')
+        });
+
         // Reiniciar Select2 cuando se presiona el botón "Limpiar Formulario"
         $('button[type="reset"]').on('click', function() {
             select2Instance1.val(null).trigger('change');
             select2Instance2.val(null).trigger('change');
             select2Instance3.val(null).trigger('change');
+            select2Instance4.val(null).trigger('change');
+            select2Instance5.val(null).trigger('change');
             $('#s11').prop('disabled', true); 
             $('#s12').prop('disabled', true); 
         });
@@ -965,6 +995,8 @@ require_once 'sesion.php';
             select2Instance1.val(null).trigger('change');
             select2Instance2.val(null).trigger('change');
             select2Instance3.val(null).trigger('change');
+            select2Instance4.val(null).trigger('change');
+            select2Instance5.val(null).trigger('change');
             $('#s11').prop('disabled', true); 
             $('#s12').prop('disabled', true);
         });

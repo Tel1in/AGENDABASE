@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    
+    actualizarFecha();
     var fechaInput = document.getElementById('fechaInput');
     fechaInput.addEventListener('change', function() {
         actualizarFechaSeleccionada();
@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
             hoy();
         }
     });
-    actualizarFecha();
     
 });
 

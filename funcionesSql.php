@@ -51,6 +51,7 @@ require_once 'conexion.php';
     
         if ($result) {
             while ($row = $result->fetch_assoc()) {
+                $row['nom_tipo_audiencia'] = utf8_decode($row['nom_tipo_audiencia']);
                 $audiencia[] = $row;
             }
         } else {
@@ -110,6 +111,7 @@ require_once 'conexion.php';
     
         if ($result) {
             while ($row = $result->fetch_assoc()) {
+                $row['nombre_sala'] = utf8_decode($row['nombre_sala']);
                 $salas[] = $row;
             }
         } else {
@@ -131,6 +133,7 @@ require_once 'conexion.php';
     
         if ($result) {
             while ($row = $result->fetch_assoc()) {
+                $row['nom_juez'] = utf8_decode($row['nom_juez']);
                 $jueces[] = $row;
             }
         } else {
@@ -144,7 +147,7 @@ require_once 'conexion.php';
 
     function solicitante(){
         $conn = conexion();
-        $sql = "SELECT idSolicitante,TipoSolicitante FROM solicitante";
+        $sql = "SELECT idSolicitante,Solicitante FROM solicitante";
         $result = $conn->query($sql);
 
         $solicitante = array();
@@ -247,7 +250,12 @@ require_once 'conexion.php';
                         GROUP BY id";
                 break;
             case 23:
-                $sql = "SELECT id_causa as id, num_causa AS valor FROM causa";
+                $sql = "SELECT c.id_causa as id, c.num_causa AS valor 
+                        FROM causa c 
+                        INNER JOIN relacionado r
+                        ON c.region = r.region 
+                        WHERE c.num_causa LIKE '%-JO' AND r.region = '$region'
+                        GROUP BY id";
                 break;
             case 8:
                 $sql = "SELECT c.id_causa as id, c.num_causa AS valor 
@@ -264,9 +272,17 @@ require_once 'conexion.php';
                 $sql = "SELECT id_causa as id, num_causa AS valor FROM causa WHERE tipo_causa=3";
                 break;
             case 14:
-            case 15:
-                $sql = "SELECT id_ejecucion as id, num_ejecucion AS valor FROM ejecucion";
+                $sql = "SELECT e.id_ejecucion as id, e.num_ejecucion AS valor 
+                        FROM ejecucion e
+                        INNER JOIN relacionado r 
+                        ON e.region = r.region
+                        WHERE r.region = '$region' AND e.num_ejecucion REGEXP '^EP[^A-Z]'
+                        GROUP BY id";
                 break;
+            case 15:
+                $sql = "SELECT id_ejecucion as id, num_ejecucion AS valor
+                        FROM ejecucion 
+                        WHERE num_ejecucion REGEXP '^EPA'";
             default:
                 echo "Error: Tipo de expediente no reconocido para nom_expediente = $id_tipo_expediente.";
                 break;
@@ -302,7 +318,14 @@ require_once 'conexion.php';
                 break;
             case 14:
             case 15:
-                // Agregar la lógica correspondiente para el caso de ejecución si es necesario
+                $sql = "SELECT i.id_inv AS idinvolucrado, CONCAT(i.nombre_inv,' ',i.paterno_inv,' ',i.materno_inv) AS nombreInputado From involucrado i
+                        INNER JOIN ejecucion_involucrado ei 
+                        ON i.id_inv = ei.id_involucrado
+                        INNER JOIN ejecucion e 
+                        ON e.id_ejecucion = ei.id_ejecucion
+                        WHERE ei.id_ejecucion= '$id' 
+                        GROUP BY ei.id_registro;
+                        ";
                 break;
             default:
                 echo "Error: Tipo de expediente no reconocido para expediente3.";
@@ -315,6 +338,7 @@ require_once 'conexion.php';
                 echo "Error en la consulta SQL: " . $conn->error;
             } else {
                 while ($row = $result->fetch_assoc()) {
+                    $row['nombreInputado'] = utf8_decode($row['nombreInputado']);
                     $exp3[] = $row;
                 }
             }
@@ -326,23 +350,23 @@ require_once 'conexion.php';
         return $exp3;
     }
     
-    
-    function insertar($nom_expediente, $numero, $inputado, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento) {
+    function insertar($nom_expediente, $numero, $imputados, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $region) {
         $conn = conexion();
-
-            $sql_check = "SELECT COUNT(*) FROM eventoAgenda WHERE fecha = '$fecha' AND hora = '$hora'";
-            $result = $conn->query($sql_check);
-            $row = $result->fetch_row();
-            if ($row[0] > 0) {
-                $response = "Error: Ya existe un evento con el mismo  fecha y hora.";
-                echo $response;
-                $conn->close();
-                return;
-            }
     
-            $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, inputado, tipoAudiencia, sala, juez, Solicitante, fecha, hora, evento) VALUES ('$nom_expediente', '$numero', $inputado, '$tipoAud', '$sala', '$juez', '$solicitante', '$fecha', '$hora', '$evento')";
-            if ($conn->query($sql_insert) === TRUE) {
-            $response = "Evento(s) insertado(s) correctamente.";
+        // Verificar si ya existe un evento en la misma fecha, hora y sala
+        $sql_check = "SELECT COUNT(*) FROM eventoAgenda WHERE fecha = '$fecha' AND hora = '$hora' AND sala = '$sala'";
+        $result = $conn->query($sql_check);
+        $row = $result->fetch_row();
+        if ($row[0] > 0) {
+            $response = "Error: Ya existe un evento con la misma fecha, hora y sala.";
+            echo $response;
+            $conn->close();
+            return;
+        }
+
+        $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, imputado, tipoAudiencia, sala, juez, Solicitante, fecha, hora , region) VALUES ('$nom_expediente', '$numero', '$imputados', '$tipoAud', '$sala', '$juez', '$solicitante', '$fecha', '$hora','$region')";
+        if ($conn->query($sql_insert) === TRUE) {
+                $response = "Evento insertado correctamente.";
                 echo $response;
             } else {
                 $response = "Error en la inserción del evento: " . $conn->error;
@@ -350,8 +374,8 @@ require_once 'conexion.php';
             }
     
         $conn->close();
+
     }
-    
     
     function obtenerDatos(){
         $conn = conexion();
@@ -368,13 +392,12 @@ require_once 'conexion.php';
                     juez.nom_juez,
                     solicitante.Solicitante,
                     eventoagenda.fecha,
-                    eventoagenda.hora,
-                    eventoagenda.evento
+                    eventoagenda.hora
                 FROM
                     eventoagenda
                     INNER JOIN cat_tipo_expediente ON cat_tipo_expediente.id_tipo_expediente = eventoagenda.expediente
-                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.inputado
-                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.inputado
+                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.imputado
+                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.imputado
                     INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
                     INNER JOIN sala ON sala.id_sala = eventoagenda.sala
                     INNER JOIN juez ON juez.id_juez = eventoagenda.juez
@@ -407,13 +430,12 @@ require_once 'conexion.php';
                     solicitante.idSolicitante,
                     solicitante.TipoSolicitante,
                     eventoagenda.fecha,
-                    DATE_FORMAT(eventoagenda.hora, '%H:%i') AS hora,
-                    eventoagenda.evento
+                    DATE_FORMAT(eventoagenda.hora, '%H:%i') AS hora
                 FROM
                     eventoagenda
                     INNER JOIN cat_tipo_expediente ON cat_tipo_expediente.id_tipo_expediente = eventoagenda.expediente
-                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.inputado
-                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.inputado
+                    LEFT JOIN involucrado ON involucrado.id_inv = eventoagenda.imputado
+                    LEFT JOIN asunto_penal ON asunto_penal.id_asunto = eventoagenda.imputado
                     INNER JOIN tipo_audiencia ON tipo_audiencia.id_tipo_audiencia = eventoagenda.tipoAudiencia
                     INNER JOIN sala ON sala.id_sala = eventoagenda.sala
                     INNER JOIN juez ON juez.id_juez = eventoagenda.juez
@@ -436,7 +458,11 @@ require_once 'conexion.php';
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
         $salas_str = implode(',', $sala); // Convertir el array de salas en una cadena separada por comas
-        $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(hora,'%H:%i'),' = ',numero) as eventoFN FROM eventoagenda WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha'";
+        $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
+                FROM eventoagenda ea
+                INNER JOIN cat_tipo_expediente ce
+                ON ea.expediente = ce.id_tipo_expediente
+                WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha'";
         
         $result = $conn->query($sql);
         $eventos = array(); 
@@ -490,10 +516,22 @@ require_once 'conexion.php';
         return $response;
     }
     
-    function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $evento){
+    function modificarDatos($id_evento_agenda, $tipoAud, $sala, $juez, $solicitante, $fecha, $hora){
         $conn = conexion();
+
+        $sql_check = "SELECT COUNT(*) FROM eventoAgenda WHERE fecha = '$fecha' AND hora = '$hora' AND sala = '$sala'";
+        $result = $conn->query($sql_check);
+        $row = $result->fetch_row();
+        if ($row[0] > 0) {
+            $response = "Error: Ya existe un evento con la misma fecha, hora y sala.";
+            echo $response;
+            $conn->close();
+            return;
+        }
+
+
         $sql = "UPDATE eventoagenda
-                SET  tipoAudiencia = '$tipoAud', sala = '$sala' , juez = '$juez', solicitante ='$solicitante' , fecha = '$fecha' , hora = '$hora' , evento = '$evento'
+                SET  tipoAudiencia = '$tipoAud', sala = '$sala' , juez = '$juez', solicitante ='$solicitante' , fecha = '$fecha' , hora = '$hora' 
                 WHERE id_evento_agenda = '$id_evento_agenda'";
         $response = "";
 
