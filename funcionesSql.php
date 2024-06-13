@@ -342,7 +342,7 @@ require_once 'conexion.php';
     
             $sql_insert = "INSERT INTO eventoAgenda (expediente, numero, inputado, tipoAudiencia, sala, juez, Solicitante, fecha, hora, evento) VALUES ('$nom_expediente', '$numero', $inputado, '$tipoAud', '$sala', '$juez', '$solicitante', '$fecha', '$hora', '$evento')";
             if ($conn->query($sql_insert) === TRUE) {
-                $response = "Evento insertado correctamente.";
+            $response = "Evento(s) insertado(s) correctamente.";
                 echo $response;
             } else {
                 $response = "Error en la inserción del evento: " . $conn->error;
