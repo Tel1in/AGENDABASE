@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $solicitante = $_POST['sol1'];
     $fecha = $_POST['d1'];
     $hora = $_POST['h1'];
-    $regionI = $region; // se toma la region 
+    $regionI = $region; // se toma la region del usuario
     insertar($nom_expediente, $numero, implode(',', $imputados), $tipoAud, $sala, $juez, $solicitante, $fecha, $hora, $regionI);
 }
 ?>

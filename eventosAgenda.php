@@ -1,5 +1,6 @@
 <?php
 require_once 'funcionesSql.php';
+require_once 'sesion.php';
 
 // Manejar la solicitud POST para obtener datos del evento
 if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
@@ -9,7 +10,11 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
     exit; 
 }
 
- function generarTablaEventos() {
+$usuario = $_SESSION['usuario'];
+$usuarioRegion = obtenerRegionYJuzgadoUsuario($usuario);
+$regionEA = $usuarioRegion["region"];
+
+ function generarTablaEventos($region) {
     $horas_fijas = array("08:00am", "09:00am", "10:00am", "11:00am", "12:00pm", "13:00pm", "14:00pm", "15:00pm", "16:00pm", "17:00pm", "18:00pm", "19:00pm", "20:00pm", "21:00pm", "22:00pm", "23:00pm", "00:00am", "01:00am", "02:00am", "03:00am", "04:00am", "05:00am", "06:00am", "07:00pm");
     $fechaCookie = $_COOKIE['fechaActual'];
 
@@ -17,22 +22,22 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
 
     foreach ($horas_fijas as $hora) {
         // Obtener los eventos para esta hora
-        $eventosAmarillo = obtenerDatos3($hora, [1, 14, 5, 31, 26, 25, 27, 11], $fechaCookie);
-        $eventosRojo = obtenerDatos3($hora, [2, 23, 33, 32, 7, 17, 8, 9, 15], $fechaCookie);
-        $eventosAzul = obtenerDatos3($hora, [3, 35, 18, 10, 29], $fechaCookie);
-        $eventosVerde = obtenerDatos3($hora, [12, 40, 30], $fechaCookie);
-        $eventosRosa = obtenerDatos3($hora, [13,16], $fechaCookie);
-        $eventosAV = obtenerDatos3($hora, [19, 4, 34], $fechaCookie);
-        $eventosAC = obtenerDatos3($hora, [20], $fechaCookie);
-        $eventosMorado = obtenerDatos3($hora, [22], $fechaCookie);
-        $eventosGris = obtenerDatos3($hora, [21], $fechaCookie);
-        $eventosAM = obtenerDatos3($hora, [23,36],  $fechaCookie);
-        $eventosCT = obtenerDatos3($hora, [37],  $fechaCookie);
-        $eventosAO = obtenerDatos3($hora, [38],  $fechaCookie);
-        $eventosVO = obtenerDatos3($hora, [39],  $fechaCookie);
-        $eventosV1 = obtenerDatos3($hora, [6],  $fechaCookie);
-        $eventosV2 = obtenerDatos3($hora, [42],  $fechaCookie);
-        $eventosV3 = obtenerDatos3($hora, [43],  $fechaCookie);
+        $eventosAmarillo = obtenerDatos3($hora, [1, 14, 5, 31, 26, 25, 27, 11], $fechaCookie,$region);
+        $eventosRojo = obtenerDatos3($hora, [2, 23, 33, 32, 7, 17, 8, 9, 15], $fechaCookie,$region);
+        $eventosAzul = obtenerDatos3($hora, [3, 35, 18, 10, 29], $fechaCookie,$region);
+        $eventosVerde = obtenerDatos3($hora, [12, 40, 30], $fechaCookie,$region);
+        $eventosRosa = obtenerDatos3($hora, [13,16], $fechaCookie,$region);
+        $eventosAV = obtenerDatos3($hora, [19, 4, 34], $fechaCookie,$region);
+        $eventosAC = obtenerDatos3($hora, [20], $fechaCookie,$region);
+        $eventosMorado = obtenerDatos3($hora, [22], $fechaCookie,$region);
+        $eventosGris = obtenerDatos3($hora, [21], $fechaCookie,$region);
+        $eventosAM = obtenerDatos3($hora, [23,36],  $fechaCookie,$region);
+        $eventosCT = obtenerDatos3($hora, [37],  $fechaCookie,$region);
+        $eventosAO = obtenerDatos3($hora, [38],  $fechaCookie,$region);
+        $eventosVO = obtenerDatos3($hora, [39],  $fechaCookie,$region);
+        $eventosV1 = obtenerDatos3($hora, [6],  $fechaCookie,$region);
+        $eventosV2 = obtenerDatos3($hora, [42],  $fechaCookie,$region);
+        $eventosV3 = obtenerDatos3($hora, [43],  $fechaCookie,$region);
 
         // Imprimir la fila de la tabla para esta hora
         echo "<tr>";
@@ -97,5 +102,5 @@ if(isset($_POST['action']) && $_POST['action'] === 'obtenerDatos2') {
     }
 }
 
-generarTablaEventos();
+generarTablaEventos($regionEA);
 ?>

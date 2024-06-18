@@ -56,9 +56,7 @@ let calendar = new Calendar(calendarEl, {
             document.getElementById('idE0').value = data.id_evento_agenda;
             document.getElementById('s100').value = data.nom_expediente;
             document.getElementById('s1100').value = data.numero;
-
-
-           
+            
             let id_involucrado = data.idInputado;
             let nombre_inputado = data.nombreInputado;
             let option = document.createElement('option');

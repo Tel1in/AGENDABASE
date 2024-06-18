@@ -126,7 +126,7 @@ require_once 'conexion.php';
     function juez() {
         $conn = conexion();
         
-        $sql = "SELECT id_juez,nom_juez FROM juez";
+        $sql = "SELECT id_juez,nom_juez FROM juez WHERE activo=1";
         $result = $conn->query($sql);
     
         $jueces = array();
@@ -454,15 +454,30 @@ require_once 'conexion.php';
         return $evento;
     }
 
-    function obtenerDatos3($hora, $sala, $fecha) {
+    function obtenerDatos3($hora, $sala, $fecha, $region , $tipo) {
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
         $salas_str = implode(',', $sala); // Convertir el array de salas en una cadena separada por comas
-        $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
+        if($tipo != 'scausa') {
+            $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
+            FROM eventoagenda ea
+            INNER JOIN cat_tipo_expediente ce
+            ON ea.expediente = ce.id_tipo_expediente
+            INNER JOIN relacionado r
+            ON ea.region = r.region 
+            WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
+            GROUP BY id_evento_agenda";
+        }else {
+            $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
                 FROM eventoagenda ea
                 INNER JOIN cat_tipo_expediente ce
                 ON ea.expediente = ce.id_tipo_expediente
-                WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha'";
+                INNER JOIN juez j ON ea.juez = j.id_juez
+                INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+                INNER JOIN causasis.relacionado r ON r.id_relacionado = jr.id_relacionado
+                WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
+                GROUP BY id_evento_agenda";
+        }
         
         $result = $conn->query($sql);
         $eventos = array(); 
@@ -479,11 +494,14 @@ require_once 'conexion.php';
         return $eventos;
     }
 
-    function obtenerDatos4() {
+    function obtenerDatos4($region) {
         $conn = conexion();
-        $sql = "SELECT eventoagenda.id_evento_agenda AS idEvento,CONCAT(cat_tipo_expediente.tipo_expediente, '-', eventoagenda.numero) AS title, eventoagenda.fecha AS f
-                FROM eventoagenda
-                INNER JOIN cat_tipo_expediente ON eventoagenda.expediente = cat_tipo_expediente.id_tipo_expediente";
+        $sql = "SELECT ea.id_evento_agenda AS idEvento,CONCAT(ca.tipo_expediente, '-', ea.numero) AS title, ea.fecha AS f
+                FROM eventoagenda ea
+                INNER JOIN relacionado r ON r.region = ea.region
+                INNER JOIN cat_tipo_expediente ca ON ea.expediente = ca.id_tipo_expediente
+                WHERE r.region = '$region'
+                GROUP BY ea.id_evento_agenda";
         $result = $conn->query($sql);
         $eventos = array();
         if ($result->num_rows > 0) {
@@ -564,20 +582,23 @@ require_once 'conexion.php';
 
     function obtenerRegionYJuzgadoUsuario($usuario) { 
         $conn = conexion(); 
-        $sql = "SELECT region, juzgado FROM relacionado WHERE usuario = '$usuario'"; 
+        $sql = "SELECT region, juzgado, tipo  FROM relacionado WHERE usuario = '$usuario'"; 
         $result = $conn->query($sql); 
     
         if ($result->num_rows > 0) { 
             $row = $result->fetch_assoc();
             $region = $row["region"];
             $juzgado = $row["juzgado"];
+            $tipo = $row["tipo"];
         } else { 
             $region = ""; 
             $juzgado = ""; 
+            $tipo = "";
             echo "No se encontró el usuario en la tabla."; 
         } 
     
         $conn->close();
     
-        return array("region" => $region, "juzgado" => $juzgado); 
+        return array("region" => $region, "juzgado" => $juzgado , "tipo" => $tipo); 
     }
+
