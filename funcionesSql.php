@@ -126,7 +126,7 @@ require_once 'conexion.php';
     function juez() {
         $conn = conexion();
         
-        $sql = "SELECT id_juez,nom_juez FROM juez WHERE activo=1";
+        $sql = "SELECT id_juez,nom_juez FROM juez";
         $result = $conn->query($sql);
     
         $jueces = array();
@@ -428,7 +428,7 @@ require_once 'conexion.php';
                     juez.nom_juez,
                     juez.id_juez,
                     solicitante.idSolicitante,
-                    solicitante.TipoSolicitante,
+                    solicitante.Solicitante,
                     eventoagenda.fecha,
                     DATE_FORMAT(eventoagenda.hora, '%H:%i') AS hora
                 FROM
@@ -454,31 +454,50 @@ require_once 'conexion.php';
         return $evento;
     }
 
-    function obtenerDatos3($hora, $sala, $fecha, $region , $tipo) {
+    function obtenerDatos3($hora, $sala, $fecha, $region, $tipo, $usuario) {
         $conn = conexion();  
         $subHora = substr($hora, 0, 2);
         $salas_str = implode(',', $sala); // Convertir el array de salas en una cadena separada por comas
-        if($tipo != 'scausa') {
-            $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
-            FROM eventoagenda ea
-            INNER JOIN cat_tipo_expediente ce
-            ON ea.expediente = ce.id_tipo_expediente
-            INNER JOIN relacionado r
-            ON ea.region = r.region 
-            WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
-            GROUP BY id_evento_agenda";
-        }else {
-            $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN 
-                FROM eventoagenda ea
-                INNER JOIN cat_tipo_expediente ce
-                ON ea.expediente = ce.id_tipo_expediente
-                INNER JOIN juez j ON ea.juez = j.id_juez
-                INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
-                INNER JOIN causasis.relacionado r ON r.id_relacionado = jr.id_relacionado
-                WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
-                GROUP BY id_evento_agenda";
-        }
+
+        if ($tipo == 'admin' || $tipo == 'scausa') {
+            // Verificar si hay relación con juez_relacionado para el usuario dado
+            $verificarRelacionSql = "SELECT COUNT(*) as count
+                                    FROM juez j
+                                    INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+                                    INNER JOIN relacionado r ON r.id_relacionado = jr.id_relacionado
+                                    WHERE r.usuario = '$usuario'";
+
+        $relacionResult = $conn->query($verificarRelacionSql);
+        $relacionData = $relacionResult->fetch_assoc();
+
         
+        if ($tipo == 'admin' && $relacionData['count'] == 0) {
+                // No hay relación con juez_relacionado, filtrar por región
+                $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN
+                        FROM eventoagenda ea
+                        INNER JOIN cat_tipo_expediente ce ON ea.expediente = ce.id_tipo_expediente
+                        INNER JOIN relacionado r ON ea.region = r.region
+                        WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
+                        GROUP BY id_evento_agenda";
+            } else {
+                // Hay relación con juez_relacionado, filtrar por usuario
+                $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN
+                        FROM eventoagenda ea
+                        INNER JOIN juez j ON ea.juez = j.id_juez
+                        INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+                        INNER JOIN relacionado r ON r.id_relacionado = jr.id_relacionado
+                        WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND r.usuario = '$usuario'
+                        GROUP BY id_evento_agenda";
+            }
+        } else {
+            $sql = "SELECT id_evento_agenda, CONCAT(TIME_FORMAT(ea.hora,'%H:%i'),' ',ea.numero) as eventoFN
+                    FROM eventoagenda ea
+                    INNER JOIN cat_tipo_expediente ce ON ea.expediente = ce.id_tipo_expediente
+                    INNER JOIN relacionado r ON ea.region = r.region
+                    WHERE hora LIKE '$subHora%' AND sala IN ($salas_str) AND fecha = '$fecha' AND ea.region = '$region'
+                    GROUP BY id_evento_agenda";
+        }
+
         $result = $conn->query($sql);
         $eventos = array(); 
     
@@ -494,14 +513,40 @@ require_once 'conexion.php';
         return $eventos;
     }
 
-    function obtenerDatos4($region) {
+    function obtenerDatos4($region, $usuario, $tipo) {
         $conn = conexion();
-        $sql = "SELECT ea.id_evento_agenda AS idEvento,CONCAT(ca.tipo_expediente, '-', ea.numero) AS title, ea.fecha AS f
-                FROM eventoagenda ea
-                INNER JOIN relacionado r ON r.region = ea.region
-                INNER JOIN cat_tipo_expediente ca ON ea.expediente = ca.id_tipo_expediente
-                WHERE r.region = '$region'
-                GROUP BY ea.id_evento_agenda";
+        $baseSql = "SELECT ea.id_evento_agenda AS idEvento, 
+                    CONCAT(ce.tipo_expediente, '-', ea.numero) AS title, 
+                    ea.fecha AS f
+                    FROM eventoagenda ea
+                    INNER JOIN cat_tipo_expediente ce ON ea.expediente = ce.id_tipo_expediente";
+
+                    if ($tipo == 'admin') {
+                    $verificarRelacionSql = "SELECT COUNT(*) as count
+                                    FROM juez j
+                                    INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+                                    INNER JOIN relacionado r ON r.id_relacionado = jr.id_relacionado
+                                    WHERE r.usuario = '$usuario'";
+
+                    $relacionResult = $conn->query($verificarRelacionSql);
+                    $relacionData = $relacionResult->fetch_assoc();
+
+                    if ($tipo == 'admin' && $relacionData['count'] == 0) {
+                    $sql = $baseSql . " INNER JOIN relacionado r ON ea.region = r.region
+                                    WHERE ea.region = '$region'
+                                    GROUP BY ea.id_evento_agenda";
+                    } else {
+                    $sql = $baseSql . " INNER JOIN juez j ON ea.juez = j.id_juez
+                                    INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+                                    INNER JOIN relacionado r ON r.id_relacionado = jr.id_relacionado
+                                    WHERE r.usuario = '$usuario'
+                                    GROUP BY ea.id_evento_agenda";
+                    }
+                    } else {
+                    $sql = $baseSql . " INNER JOIN relacionado r ON ea.region = r.region
+                                WHERE ea.region = '$region'
+                                GROUP BY ea.id_evento_agenda";
+                    }
         $result = $conn->query($sql);
         $eventos = array();
         if ($result->num_rows > 0) {
@@ -602,3 +647,15 @@ require_once 'conexion.php';
         return array("region" => $region, "juzgado" => $juzgado , "tipo" => $tipo); 
     }
 
+    function juezRelacion($usuario){
+        $conn = conexion();
+        $sql = "SELECT COUNT(*) as count
+            FROM juez j
+            INNER JOIN juez_relacionado jr ON j.id_juez = jr.id_juez
+            INNER JOIN relacionado r ON r.id_relacionado = jr.id_relacionado
+            WHERE r.usuario = '$usuario'";
+        $result = $conn->query($sql);
+        $row = $result->fetch_assoc();
+        $conn->close();
+        return $row['count'] > 0;
+    }

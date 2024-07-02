@@ -12,13 +12,14 @@ require_once 'sesion.php';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="./src/calendar.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.1/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
     integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
     crossorigin="anonymous"></script> 
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.1/dist/sweetalert2.all.min.js"></script>
     
 
 
@@ -50,17 +51,17 @@ require_once 'sesion.php';
         .then(response => response.text())
         .then(data => {
             if (data.trim() === "Evento insertado correctamente.") {
-                swal("Evento Insertado con Éxito", "CONTINUAR", "success")
+                Swal.fire("Evento Insertado con Éxito", "CONTINUAR", "success")
                 .then(() => {
                     location.reload();
                 });
             } else {
-                swal("Error", data, "error");
+                Swal.fire("Error", data, "error");
             }
         })
         .catch(error => {
             console.error("Error en la solicitud Fetch: " + error.message);
-            swal("Error", "Hubo un error en la solicitud", "error");
+            Swal.fire("Error", "Hubo un error en la solicitud", "error");
             });
         });
     });
@@ -101,23 +102,23 @@ require_once 'sesion.php';
             .then(data => {
                 if (!data.trim()) {
                     // Si la respuesta está vacía, mostramos un mensaje de éxito genérico
-                    swal("Evento Modificado con Éxito", "CONTINUAR", "success")
+                    Swal.fire("Evento Modificado con Éxito", "CONTINUAR", "success")
                     .then(() => {
                         location.reload();
                     });
                 } else if (data.trim() === "Evento modificado correctamente.") {
                     // Si la respuesta contiene el mensaje de éxito esperado
-                    swal("Evento Modificado con Éxito", "CONTINUAR", "success")
+                    Swal.fire("Evento Modificado con Éxito", "CONTINUAR", "success")
                     .then(() => {
                         location.reload();
                     });
                 } else {
-                    swal("Error", data, "error");
+                    Swal.fire("Error", data, "error");
                 }
             })
             .catch(error => {
                 console.error("Error en la solicitud Fetch: " + error.message);
-                swal("Error", "Hubo un error en la solicitud", "error");
+                Swal.fire("Error", "Hubo un error en la solicitud", "error");
             });
         }
     });
@@ -138,13 +139,13 @@ require_once 'sesion.php';
         fetch('eliminar_evento.php?id_evento_agenda=' + id_evento_agenda)
             .then(response => response.text())
             .then(data => {
-            swal("¡Eliminado!", "El evento ha sido eliminado correctamente.", "success")
+                Swal.fire("¡Eliminado!", "El evento ha sido eliminado correctamente.", "success")
                 .then(() => {
                 window.location.reload();
                 });
             })
             .catch(error => {
-            swal("Error", "Hubo un problema al eliminar el evento", "error");
+                Swal.fire("Error", "Hubo un problema al eliminar el evento", "error");
             console.error(error);
             });
         } else {
@@ -210,7 +211,7 @@ require_once 'sesion.php';
 
                         var optionGuardada4 = document.createElement('option');
                         optionGuardada4.value = data.idSolicitante;
-                        optionGuardada4.textContent = data.TipoSolicitante;
+                        optionGuardada4.textContent = data.Solicitante;
                         optionGuardada4.selected = true;
                         form.querySelector('#sol11').appendChild(optionGuardada4);
 
@@ -230,7 +231,6 @@ require_once 'sesion.php';
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Escuchar el evento 'shown.bs.modal' para el modal 'exampleModal2'
         document.getElementById('exampleModal2').addEventListener('shown.bs.modal', function () {
             var modificarBtn = document.getElementById("modificarBtn");
             var modalFooter = document.querySelector("#exampleModal2 .modal-footer");
@@ -388,6 +388,46 @@ require_once 'sesion.php';
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const agregarEventoBtn = document.getElementById('agregarEventoBtn');
+        
+        // Asegúrate de que el botón existe
+        if (!agregarEventoBtn) {
+            console.error('El botón "agregarEventoBtn" no se encontró en el DOM');
+            return;
+        }
+
+        fetch('juezRel.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La respuesta de la red no fue ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Datos del usuario:', data); // Para depuración
+
+                const tipoUsuario = data.tipo;
+                const relacionadoConJuez = data.relacionadoConJuez;
+
+                console.log('Tipo de usuario:', tipoUsuario); // Para depuración
+                console.log('Relacionado con juez:', relacionadoConJuez); // Para depuración
+
+                if ((tipoUsuario === 'scausa' || tipoUsuario === 'admin') && relacionadoConJuez) {
+                    console.log('Ocultando el botón'); // Para depuración
+                    agregarEventoBtn.style.display = 'none';
+
+                } else {
+                    console.log('No se cumplieron las condiciones para ocultar el botón'); // Para depuración
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos del usuario:', error);
+            });
+    });
+</script>
+
 <title>AGENDA V1</title>
 </head>
 
@@ -463,7 +503,7 @@ require_once 'sesion.php';
                             </table>
                         </div>
                     <div>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal"  id="agregarEventoBtn" data-bs-target="#exampleModal">
                             Agregar Evento
                         </button>
                     </div>
@@ -805,79 +845,121 @@ require_once 'sesion.php';
             document.getElementById('s1200').appendChild(option);
         
 
-            var optionGuardada = document.createElement('option');
-            optionGuardada.value = data.id_tipo_audiencia; 
-            optionGuardada.textContent = data.nom_tipo_audiencia; 
-            optionGuardada.selected = true; 
-            document.getElementById('s300').appendChild(optionGuardada);
-
-            // Verificar si nom_tipo_audiencia es un arreglo
+           // TIPO DE AUDIENCIA
+            let select1 = document.getElementById('s300');
+            let optionGuardada = document.createElement('option');
+            optionGuardada.value = data.id_tipo_audiencia;
+            optionGuardada.textContent = data.nom_tipo_audiencia;
+            optionGuardada.selected = true;
+            let existingOption1 = select1.querySelector(`option[value="${data.id_tipo_audiencia}"]`);
+            if (existingOption1) {
+                select1.replaceChild(optionGuardada, existingOption1);
+            } else {
+                select1.appendChild(optionGuardada);
+            }
             if (Array.isArray(data.nom_tipo_audiencia)) {
-                // Iterar sobre cada tipo de audiencia en el arreglo
                 data.nom_tipo_audiencia.forEach(function(audiencia) {
-                    // Crear una opción para cada tipo de audiencia
-                    var option = document.createElement('option');
-                    option.value = audiencia.id_tipo_audiencia;
-                    option.textContent = audiencia.nom_tipo_audiencia;
-                    document.getElementById('s300').appendChild(option);
+                    if (audiencia.id_tipo_audiencia !== data.id_tipo_audiencia) {
+                        let option = select1.querySelector(`option[value="${audiencia.id_tipo_audiencia}"]`);
+                        if (option) {
+                            option.textContent = audiencia.nom_tipo_audiencia;
+                        } else {
+                            option = document.createElement('option');
+                            option.value = audiencia.id_tipo_audiencia;
+                            option.textContent = audiencia.nom_tipo_audiencia;
+                            select1.appendChild(option);
+                        }
+                    }
                 });
-            } 
+            }
 
-            var optionGuardada2 = document.createElement('option');
-            optionGuardada2.value = data.id_sala; 
-            optionGuardada2.textContent = data.nombre_sala; 
-            optionGuardada2.selected = true; 
-            document.getElementById('sala10').appendChild(optionGuardada2);
-
-            // Verificar si nom_tipo_audiencia es un arreglo
+            // SALA
+            let select2 = document.getElementById('sala10');
+            let optionGuardada2 = document.createElement('option');
+            optionGuardada2.value = data.id_sala;
+            optionGuardada2.textContent = data.nombre_sala;
+            optionGuardada2.selected = true;
+            let existingOption2 = select2.querySelector(`option[value="${data.id_sala}"]`);
+            if (existingOption2) {
+                select2.replaceChild(optionGuardada2, existingOption2);
+            } else {
+                select2.appendChild(optionGuardada2);
+            }
             if (Array.isArray(data.nombre_sala)) {
-                // Iterar sobre cada tipo de audiencia en el arreglo
                 data.nombre_sala.forEach(function(sala) {
-                    // Crear una opción para cada tipo de audiencia
-                    var option = document.createElement('option');
-                    option.value = sala.id_sala;
-                    option.textContent = sala.nom_tipo_audiencia;
-                    document.getElementById('sala10').appendChild(option);
+                    if (sala.id_sala !== data.id_sala) {
+                        let option = select2.querySelector(`option[value="${sala.id_sala}"]`);
+                        if (option) {
+                            option.textContent = sala.nombre_sala;
+                        } else {
+                            option = document.createElement('option');
+                            option.value = sala.id_sala;
+                            option.textContent = sala.nombre_sala;
+                            select2.appendChild(option);
+                        }
+                    }
                 });
-            } 
+            }
 
-            
-            var optionGuardada3 = document.createElement('option');
-            optionGuardada3.value = data.id_juez; 
-            optionGuardada3.textContent = data.nom_juez; 
-            optionGuardada3.selected = true; 
-            document.getElementById('juez10').appendChild(optionGuardada3);
-
-            // Verificar si nom_tipo_audiencia es un arreglo
+            // JUEZ
+            let select3 = document.getElementById('juez10');
+            let optionGuardada3 = document.createElement('option');
+            optionGuardada3.value = data.id_juez;
+            optionGuardada3.textContent = data.nom_juez;
+            optionGuardada3.selected = true;
+            let existingOption3 = select3.querySelector(`option[value="${data.id_juez}"]`);
+            if (existingOption3) {
+                select3.replaceChild(optionGuardada3, existingOption3);
+            } else {
+                select3.appendChild(optionGuardada3);
+            }
             if (Array.isArray(data.nom_juez)) {
                 data.nom_juez.forEach(function(juez) {
-                    var option = document.createElement('option');
-                    option.value = juez.id_juez;
-                    option.textContent = juez.nom_juez;
-                    // Agregar la opción al select
-                    document.getElementById('juez10').appendChild(option);
+                    if (juez.id_juez !== data.id_juez) {
+                        let option = select3.querySelector(`option[value="${juez.id_juez}"]`);
+                        if (option) {
+                            option.textContent = juez.nom_juez;
+                        } else {
+                            option = document.createElement('option');
+                            option.value = juez.id_juez;
+                            option.textContent = juez.nom_juez;
+                            select3.appendChild(option);
+                        }
+                    }
                 });
             } 
 
+            // SOLICITANTE 
+            var select = document.getElementById('sol111');
             var optionGuardada4 = document.createElement('option');
             optionGuardada4.value = data.idSolicitante;
-            optionGuardada4.textContent = data.TipoSolicitante;
+            optionGuardada4.textContent = data.Solicitante;
             optionGuardada4.selected = true;
-            document.getElementById('sol111').appendChild(optionGuardada4); 
-
-            if (Array.isArray(data.TipoSolicitante)) {
-                data.TipoSolicitante.forEach(function(solicitante) {
-                    var option = document.createElement('option');
-                    option.value = solicitante.idSolicitante;
-                    option.textContent = solicitante.TipoSolicitante;
-                    // Agregar la opción al select
-                    document.getElementById('sol111').appendChild(option);
+            var existingOption = select.querySelector(`option[value="${data.idSolicitante}"]`);
+            if (existingOption) {
+                select.replaceChild(optionGuardada4, existingOption);
+            } else {
+                select.appendChild(optionGuardada4);
+            }
+            if (Array.isArray(data.Solicitante)) {
+                data.Solicitante.forEach(function(solicitante) {
+                    if (solicitante.idSolicitante !== data.idSolicitante) {
+                        var option = select.querySelector(`option[value="${solicitante.idSolicitante}"]`);
+                        if (option) {
+                            option.textContent = solicitante.Solicitante;
+                        } else {
+                            option = document.createElement('option');
+                            option.value = solicitante.idSolicitante;
+                            option.textContent = solicitante.Solicitante;
+                            select.appendChild(option);
+                        }
+                    }
                 });
-            } 
+            }
 
+            
             document.getElementById('d100').value = data.fecha;
             document.getElementById('h100').value = data.hora;
-            
 
 
             var modal = new bootstrap.Modal(document.getElementById('exampleModal3'));
@@ -886,6 +968,7 @@ require_once 'sesion.php';
         .catch(error => console.error('Error al obtener los datos del evento:', error));
     }
 </script>
+
 <script src="dist/bundle.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
