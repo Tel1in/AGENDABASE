@@ -349,30 +349,45 @@ require_once 'sesion.php';
                 // Remover los botones actuales
                 modalFooter1.innerHTML = "";
 
-                // Agregar los botones iniciales
-                var cerrarBtn1 = document.createElement('button');
-                cerrarBtn1.type = 'button';
-                cerrarBtn1.classList.add('btn', 'btn-secondary');
-                cerrarBtn1.dataset.bsDismiss = 'modal';
-                cerrarBtn1.textContent = 'Cerrar';
+                fetch('juezRel.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tipoUsuario = data.tipo;
+                    const relacionadoConJuez = data.relacionadoConJuez;
 
-                var modificarBtn1 = document.createElement('button');
-                modificarBtn1.type = 'button';
-                modificarBtn1.classList.add('btn', 'btn-primary');
-                modificarBtn1.id = 'modificarBtn2';
-                modificarBtn1.textContent = 'Modificar';
-                modificarBtn1.addEventListener('click', mostrarBotonesEdicion);
+                    if ((tipoUsuario === 'scausa' || tipoUsuario === 'admin') && relacionadoConJuez) {
+                        // No mostrar ningún botón si está relacionado con un juez
+                        return;
+                    }
 
-                var eliminarBtn1 = document.createElement('button');
-                eliminarBtn1.type = 'button';
-                eliminarBtn1.classList.add('btn', 'btn-danger');
-                eliminarBtn1.id = 'eleminarBtnModa';
-                eliminarBtn1.textContent = 'Eliminar';
-                eliminarBtn1.addEventListener('click', () => eliminarDatos(document.getElementById('idE0').value));
+                    // Si no está relacionado, mostrar los botones normalmente
+                    var cerrarBtn1 = document.createElement('button');
+                    cerrarBtn1.type = 'button';
+                    cerrarBtn1.classList.add('btn', 'btn-secondary');
+                    cerrarBtn1.dataset.bsDismiss = 'modal';
+                    cerrarBtn1.textContent = 'Cerrar';
 
-                modalFooter1.appendChild(cerrarBtn1);
-                modalFooter1.appendChild(modificarBtn1);
-                modalFooter1.appendChild(eliminarBtn1);
+                    var modificarBtn1 = document.createElement('button');
+                    modificarBtn1.type = 'button';
+                    modificarBtn1.classList.add('btn', 'btn-primary');
+                    modificarBtn1.id = 'modificarBtn2';
+                    modificarBtn1.textContent = 'Modificar';
+                    modificarBtn1.addEventListener('click', mostrarBotonesEdicion);
+
+                    var eliminarBtn1 = document.createElement('button');
+                    eliminarBtn1.type = 'button';
+                    eliminarBtn1.classList.add('btn', 'btn-danger');
+                    eliminarBtn1.id = 'eleminarBtnModa';
+                    eliminarBtn1.textContent = 'Eliminar';
+                    eliminarBtn1.addEventListener('click', () => eliminarDatos(document.getElementById('idE0').value));
+
+                    modalFooter1.appendChild(cerrarBtn1);
+                    modalFooter1.appendChild(modificarBtn1);
+                    modalFooter1.appendChild(eliminarBtn1);
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos del usuario:', error);
+                });
             }
             modificarBtn1.addEventListener('click', mostrarBotonesEdicion);
 

@@ -3,6 +3,6 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-$usuario = "Yoana";
+$usuario = "inhabilitada";
 $_SESSION['usuario'] = $usuario;
 ?>
