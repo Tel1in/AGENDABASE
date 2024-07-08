@@ -453,7 +453,6 @@ require_once 'sesion.php';
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-secondary" onclick="cambiarVentanas('calendar')">MES</button>
                     <button type="button" class="btn btn-secondary" onclick="cambiarVentanas('tabla2')">DIA</button>
-                    <button typr="button" class="btn btn-secondary" onclick="cambiarVentanas('tabla3')">EVENTO</button>
                 </div>
             </div>
 
