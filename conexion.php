@@ -4,7 +4,7 @@
         $servername = "127.0.0.1:3307";
         $username = "root";
         $password = "1234";
-        $dbname = "causasis";
+        $dbname = "agenda2";
     
         $conn = new mysqli($servername, $username, $password, $dbname);
 

@@ -1,10 +1,10 @@
 <?php
 require_once 'funcionesSql.php';
 
-if(isset($_GET['id_evento_agenda'])) {
-    $id_evento_agenda = $_GET['id_evento_agenda'];
+if(isset($_GET['ideagendas'])) {
+    $ideagendas = $_GET['ideagendas'];
 
-    $response = eliminarDatos($id_evento_agenda);
+    $response = eliminarDatos($ideagendas);
     
     echo $response;
 } else {

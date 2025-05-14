@@ -1,6 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     actualizarFecha();
+    actualizarHora(); // Añadido: iniciar la actualización de la hora
+
     var fechaInput = document.getElementById('fechaInput');
     fechaInput.addEventListener('change', function() {
         actualizarFechaSeleccionada();
@@ -63,15 +65,15 @@ function esFechaActual() {
 
 function actualizarFechaSeleccionada() {
     var fechaInputValue = document.getElementById("fechaInput").value;
-    var fechaSeleccionada = new Date(fechaInputValue + 'T00:00:00');
-    fechaActual = fechaSeleccionada;
+    fechaActual = new Date(fechaInputValue + 'T00:00:00');
     actualizarFecha();
 }
 
 function guardarFechaEnCookie() {
-    var fechaFormateada = fechaActual.toISOString().split('T')[0];
+    var fechaFormateada = fechaActual.toLocaleDateString('en-CA');
     document.cookie = "fechaActual=" + encodeURIComponent(fechaFormateada);
-    console.log(fechaActual);
+    console.log("Fecha guardada en cookie:", fechaFormateada);
+    console.log("Objeto Date:", fechaActual);
 }
 
 
@@ -91,3 +93,17 @@ function cargarTablaEventosDesdePHP() {
     .catch(error => console.error('Error al cargar la tabla de eventos:', error));
 }
 
+// Funciones añadidas para actualizar la hora
+function actualizarHora() {
+    const ahora = new Date();
+    const horas = ahora.getHours().toString().padStart(2, '0');
+    const minutos = ahora.getMinutes().toString().padStart(2, '0');
+    const segundos = ahora.getSeconds().toString().padStart(2, '0');
+    
+    const horaActual = `${horas}:${minutos}:${segundos}`;
+    
+    document.getElementById('horheader').textContent = horaActual;
+}
+
+// Actualizar la hora cada segundo
+setInterval(actualizarHora, 1000);
